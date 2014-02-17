@@ -1,13 +1,10 @@
-# Compiled Object files
-*.slo
-*.lo
-*.o
+bin/*
+lib/*
+build/*
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
+docs/*.png
+docs/*.css
+docs/*.js
+docs/search/*
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
+src/appinfo.h
