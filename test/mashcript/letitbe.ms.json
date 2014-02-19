@@ -1,0 +1,77 @@
+{
+    "version": "",
+    "assetsPath": "/home/waldemar/Projects/assets/video", //Optional
+    "mashup": {
+        "id": "",
+        "title": "Let it be", //USER
+        "creatorId": 123,
+        "assets": [
+            {
+                "id": 1,
+                "class": "video",
+                "length": "00:00:54.85",
+                "quality": [
+                    {
+                        "path": "letitbe01.avi", //Optional
+                        "bitrate": 2500, //In kb/s
+                        "naturalWidth": 160,
+                        "naturalHeight": 120
+                    },
+                    {
+                        "path": "letitbe01.mov",
+                        "bitrate": 2537, //In kb/s
+                        "naturalWidth": 320,
+                        "naturalHeight": 240
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "class": "video",
+                "length": "00:00:54.88",
+                "quality": [
+                    {
+                        "path": "letitbe02.avi", //Optional
+                        "bitrate": 2778, //In kb/s
+                        "naturalWidth": 160,
+                        "naturalHeight": 120
+                    },
+                    {
+                        "path": "letitbe02.mov",
+                        "bitrate": 3686, //In kb/s
+                        "naturalWidth": 320,
+                        "naturalHeight": 240
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "class": "video",
+                "length": "00:00:54.85",
+                "quality": [
+                    {
+                        "path": "letitbe03.avi", //Optional
+                        "bitrate": 2944, //In kb/s
+                        "naturalWidth": 160,
+                        "naturalHeight": 120
+                    },
+                    {
+                        "path": "letitbe03.mov",
+                        "bitrate": 4208, //In kb/s
+                        "naturalWidth": 320,
+                        "naturalHeight": 240
+                    }
+                ]
+            }
+        ],
+        "scene": {
+            "camera": "fixed",
+            "width": 640,
+            "height": 480,
+            "transitions": [
+                {},
+                {}
+            ]
+        }
+    }
+}
