@@ -68,9 +68,61 @@
             "camera": "fixed",
             "width": 640,
             "height": 480,
+            "actors": [
+                {
+                    "assetId": 1,
+                    //instanceId
+                    //entersAt
+                    //existsAt
+                    "x": 0,
+                    "y": 0,
+                    "z": 0,
+                    "width": 0.333,
+                    "height": 0.333
+                },
+                {
+                    "assetId": 2,
+                    "x": 0.333,
+                    "y": 0.333,
+                    "z": 0,
+                    "width": 0.333,
+                    "height": 0.333,
+                    "opacity": 0
+                },
+                {
+                    "assetId": 3,
+                    "x": 0.667,
+                    "y": 0.667,
+                    "z": 0,
+                    "width": 0.333,
+                    "height": 0.333,
+                    "opacity": 0
+                }
+            ],
             "transitions": [
-                {},
-                {}
+                {
+                    "assetId": 1,
+                    "target": "opacity",
+                    "startValue": 0,
+                    "endValue": 1,
+                    //startsAt
+                    "duration": 2000,
+                    "easing": "easeInCubic"
+                },
+                {
+                    "assetId": 2,
+                    "target": "opacity",
+                    "endValue": 1,
+                    "duration": 2500,
+                    "easing": "easeInCubic"
+                },
+                {
+                    "assetId": 3,
+                    "target": "opacity",
+                    "endValue": 1,
+                    "duration": 3000,
+                    "easing": "easeInCubic"
+                }
             ]
         }
     }
