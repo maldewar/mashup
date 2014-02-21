@@ -17,8 +17,11 @@ int main(int argc, char *argv[]) {
       ("output-file,o", po::value<std::string>(), "path to output smashscript file.")
       ("compression,c", po::value<int>(), "set compression level.")
     ;
+    po::positional_options_description p;
+    p.add("input-file", -1);
     po::variables_map vm;        
-    po::store(po::parse_command_line(argc, argv, desc), vm);
+    //po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
     po::notify(vm);    
 
     if (vm.count("help")) {
