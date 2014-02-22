@@ -21,7 +21,7 @@ SET (APPLICATION_ID "${APPLICATION_VENDOR_ID}.${PROJECT_NAME}")
 #
 # Debugging Options
 #
-SET (CMAKE_VERBOSE_MAKEFILE 1) # Use 1 for debugging, 0 for release
+SET (CMAKE_VERBOSE_MAKEFILE 0) # Use 1 for debugging, 0 for release
 
 #
 # Project Output Paths
@@ -74,6 +74,7 @@ ENDFOREACH (CONFIGINPUT ${CONFIGINPUTS})
 
 # Add thirdparty directories first!
 ADD_SUBDIRECTORY(thirdparty/gmock-1.7.0)
+ADD_SUBDIRECTORY(src/model)
 ADD_SUBDIRECTORY(src/common/parser)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)
