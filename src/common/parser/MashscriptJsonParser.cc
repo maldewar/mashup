@@ -2,13 +2,20 @@
 
 #include <iostream>
 
-MashscriptJsonParser::MashscriptJsonParser() {
+#include <boost/property_tree/json_parser.hpp>
+
+namespace pt = boost::property_tree;
+
+MashscriptJsonParser::MashscriptJsonParser() : MashscriptParser() {
 };
 
-MashscriptJsonParser::~MashscriptJsonParser() {
+int MashscriptJsonParser::ReadFormattedFile(std::string file,
+  boost::property_tree::ptree& pTree) {
+  pt::read_json(file, pTree);
+  return PARSER_STATUS_OK;
 };
 
-std::string MashscriptJsonParser::ParseScript(const std::string script) {
-  std::cout << "not so hello world!" << std::endl;
-  return "";
+int MashscriptJsonParser::ReadFormattedStream(std::string stream,
+  boost::property_tree::ptree& pTree) {
+  return PARSER_STATUS_OK;
 };

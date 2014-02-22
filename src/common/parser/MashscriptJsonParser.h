@@ -3,14 +3,17 @@
 
 #include <string>
 
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
+#include "MashscriptParser.h"
 
-class MashscriptJsonParser {
+class MashscriptJsonParser : public MashscriptParser {
   public:
     MashscriptJsonParser();
-    ~MashscriptJsonParser();
-    std::string ParseScript(std::string script);
+
+  protected:
+    virtual int ReadFormattedFile(std::string file,
+      boost::property_tree::ptree& pTree);
+    virtual int ReadFormattedStream(std::string stream,
+      boost::property_tree::ptree& pTree);
 };
 
 #endif // MASHUP_COMMON_PARSER_MASHSCRIPTJSONPARSER_
