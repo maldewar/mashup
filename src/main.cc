@@ -5,42 +5,57 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
+#include "model/Mashup.h"
 #include "common/parser/MashscriptJsonParser.h"
 
 int main(int argc, char *argv[]) {
   try {
-    po::options_description desc("Allowed options");
-    desc.add_options()
+    std::string inputFile;
+    std::string outputFile;
+    std::string outputFormat;
+    po::options_description genericOpts("Generic options");
+    genericOpts.add_options()
       ("help,h", "produce help message.")
       ("version,v", "print the version number.")
-      ("input-file,i", po::value<std::string>(), "path to smashscript input file.")
-      ("output-file,o", po::value<std::string>(), "path to output smashscript file.")
-      ("compression,c", po::value<int>(), "set compression level.")
     ;
+    po::options_description configShownOpts("Configuration");
+    configShownOpts.add_options()
+      ("output-file,o", po::value<std::string>(&outputFile)->default_value(""),
+        "path to output smashscript file.")
+      ("output-format,f", po::value<std::string>(&outputFormat)->default_value("json"),
+        "print to the selected format. Allowed values are: \"json\" \"xml\"");
+    ;
+    po::options_description configHiddenOpts("Hidden options");
+    configHiddenOpts.add_options()
+      ("input-file,i", po::value<std::string>(&inputFile),
+        "path to smashscript input file.")
+    ;
+    // Commandline options.
+    po::options_description cmdlineOpts;
+    cmdlineOpts.add(genericOpts).add(configShownOpts).add(configHiddenOpts);
+    po::options_description printOpts;
+    // Commandline options displayed with help.
+    printOpts.add(genericOpts).add(configShownOpts);
     po::positional_options_description p;
     p.add("input-file", -1);
     po::variables_map vm;        
-    //po::store(po::parse_command_line(argc, argv, desc), vm);
-    po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
+    po::store(po::command_line_parser(argc, argv).options(cmdlineOpts).positional(p).run(), vm);
     po::notify(vm);    
 
     if (vm.count("help")) {
-      std::cout << desc << "\n";
+      std::cout << printOpts << "\n";
       return 1;
     }
 
-    if (vm.count("compression")) {
-      std::cout << "Compression level was set to " 
-        << vm["compression"].as<int>() << ".\n";
-    } else {
-      std::cout << "Compression level was not set.\n";
-    }
     if (vm.count("input-file")) {
       std::cout << "Input file set to "
         << vm["input-file"].as<std::string>() << "\n";
     } else {
       std::cout << "Input file not set." << "\n";
     }
+    Mashup* mashup = new Mashup();
+    MashscriptJsonParser* jsonParser = new MashscriptJsonParser();
+    jsonParser->FromFile(inputFile, *mashup);
   } catch(std::exception& e) {
     std::cerr << "error: " << e.what() << "\n";
     return 1;
@@ -49,7 +64,4 @@ int main(int argc, char *argv[]) {
   }
 
   return 0;
-  //std::cout << "Hello World!" << std::endl;
-  //aMashscriptJsonParser* jsonParser = new MashscriptJsonParser();
-  //jsonParser->ParseScript("");
 }
