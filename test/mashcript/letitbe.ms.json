@@ -1,129 +1,127 @@
 {
     "version": "",
     "assetsPath": "/home/waldemar/Projects/assets/video", //Optional
-    "mashup": {
-        "id": "",
-        "title": "Let it be ノロウイルス", //USER
-        "creatorId": 123,
-        "assets": [
-            {
-                "id": 1,
-                "class": "video",
-                "length": "00:00:54.85",
-                "quality": [
-                    {
-                        "path": "letitbe01.avi", //Optional
-                        "bitrate": 2500, //In kb/s
-                        "naturalWidth": 160,
-                        "naturalHeight": 120
-                    },
-                    {
-                        "path": "letitbe01.mov",
-                        "bitrate": 2537, //In kb/s
-                        "naturalWidth": 320,
-                        "naturalHeight": 240
-                    }
-                ]
-            },
-            {
-                "id": 2,
-                "class": "video",
-                "length": "00:00:54.88",
-                "quality": [
-                    {
-                        "path": "letitbe02.avi", //Optional
-                        "bitrate": 2778, //In kb/s
-                        "naturalWidth": 160,
-                        "naturalHeight": 120
-                    },
-                    {
-                        "path": "letitbe02.mov",
-                        "bitrate": 3686, //In kb/s
-                        "naturalWidth": 320,
-                        "naturalHeight": 240
-                    }
-                ]
-            },
-            {
-                "id": 3,
-                "class": "video",
-                "length": "00:00:54.85",
-                "quality": [
-                    {
-                        "path": "letitbe03.avi", //Optional
-                        "bitrate": 2944, //In kb/s
-                        "naturalWidth": 160,
-                        "naturalHeight": 120
-                    },
-                    {
-                        "path": "letitbe03.mov",
-                        "bitrate": 4208, //In kb/s
-                        "naturalWidth": 320,
-                        "naturalHeight": 240
-                    }
-                ]
-            }
-        ],
-        "scene": {
-            "camera": "fixed",
-            "width": 640,
-            "height": 480,
-            "actors": [
+    "id": "",
+    "title": "Let it be ノロウイルス", //USER
+    "creatorId": 123,
+    "assets": [
+        {
+            "id": 1,
+            "type": "video",
+            "length": "00:00:54.85",
+            "quality": [
                 {
-                    "assetId": 1,
-                    //instanceId
-                    //entersAt
-                    //existsAt
-                    "x": 0,
-                    "y": 0,
-                    "z": 0,
-                    "width": 0.333,
-                    "height": 0.333
+                    "path": "letitbe01.avi", //Optional
+                    "bitrate": 2500, //In kb/s
+                    "naturalWidth": 160,
+                    "naturalHeight": 120
                 },
                 {
-                    "assetId": 2,
-                    "x": 0.333,
-                    "y": 0.333,
-                    "z": 0,
-                    "width": 0.333,
-                    "height": 0.333,
-                    "opacity": 0
-                },
-                {
-                    "assetId": 3,
-                    "x": 0.667,
-                    "y": 0.667,
-                    "z": 0,
-                    "width": 0.333,
-                    "height": 0.333,
-                    "opacity": 0
+                    "path": "letitbe01.mov",
+                    "bitrate": 2537, //In kb/s
+                    "naturalWidth": 320,
+                    "naturalHeight": 240
                 }
-            ],
-            "transitions": [
+            ]
+        },
+        {
+            "id": 2,
+            "type": "video",
+            "length": "00:00:54.88",
+            "quality": [
                 {
-                    "assetId": 1,
-                    "target": "opacity",
-                    "startValue": 0,
-                    "endValue": 1,
-                    //startsAt
-                    "duration": 2000,
-                    "easing": "easeInCubic"
+                    "path": "letitbe02.avi", //Optional
+                    "bitrate": 2778, //In kb/s
+                    "naturalWidth": 160,
+                    "naturalHeight": 120
                 },
                 {
-                    "assetId": 2,
-                    "target": "opacity",
-                    "endValue": 1,
-                    "duration": 2500,
-                    "easing": "easeInCubic"
+                    "path": "letitbe02.mov",
+                    "bitrate": 3686, //In kb/s
+                    "naturalWidth": 320,
+                    "naturalHeight": 240
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "type": "video",
+            "length": "00:00:54.85",
+            "quality": [
+                {
+                    "path": "letitbe03.avi", //Optional
+                    "bitrate": 2944, //In kb/s
+                    "naturalWidth": 160,
+                    "naturalHeight": 120
                 },
                 {
-                    "assetId": 3,
-                    "target": "opacity",
-                    "endValue": 1,
-                    "duration": 3000,
-                    "easing": "easeInCubic"
+                    "path": "letitbe03.mov",
+                    "bitrate": 4208, //In kb/s
+                    "naturalWidth": 320,
+                    "naturalHeight": 240
                 }
             ]
         }
+    ],
+    "scene": {
+        "camera": "fixed",
+        "width": 640,
+        "height": 480,
+        "actors": [
+            {
+                "assetId": 1,
+                //instanceId
+                //entersAt
+                //existsAt
+                "x": 0,
+                "y": 0,
+                "z": 0,
+                "width": 0.333,
+                "height": 0.333
+            },
+            {
+                "assetId": 2,
+                "x": 0.333,
+                "y": 0.333,
+                "z": 0,
+                "width": 0.333,
+                "height": 0.333,
+                "opacity": 0
+            },
+            {
+                "assetId": 3,
+                "x": 0.667,
+                "y": 0.667,
+                "z": 0,
+                "width": 0.333,
+                "height": 0.333,
+                "opacity": 0
+            }
+        ],
+        "transitions": [
+            {
+                "assetId": 1,
+                "target": "opacity",
+                "startValue": 0,
+                "endValue": 1,
+                //startsAt
+                "duration": 2000,
+                "easing": "easeInCubic"
+            },
+            {
+                "assetId": 2,
+                "target": "opacity",
+                "endValue": 1,
+                "duration": 2500,
+                "easing": "easeInCubic"
+            },
+            {
+                "assetId": 3,
+                "target": "opacity",
+                "endValue": 1,
+                "duration": 3000,
+                "easing": "easeInCubic"
+            }
+        ]
     }
 }
