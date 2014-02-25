@@ -8,17 +8,18 @@
 #include "MashscriptParser.h"
 #include "../../model/Mashup.h"
 
-const int PARSER_STATUS_OK            = 0;
-const int PARSER_ERROR_FILE_NOT_FOUND = -1;
-const int PARSER_ERROR_BAD_FORMATT    = -2;
+const int PARSER_STATUS_OK          = 0;
+const int PARSER_ERROR_READING_FILE = -1;
+const int PARSER_ERROR_BAD_FORMAT   = -2;
+const int PARSER_ERROR_UNKNOWN      = -3;
 
 /**
  * @file
  * @brief Base class for parsing mashscript files or streams.
  *
  * The parser classes extending this base class should implement
- * only the reading of files or of streams providing a boost::property_tree
- * object.
+ * only the reading of files or of streams providing a 
+ * boost::property_tree object.
  * @author Waldemar Sánchez
  * @date February, 2014
  */
@@ -54,7 +55,7 @@ class MashscriptParser {
      * @return Status or error code for the parsing.
      */
     virtual int ReadFormattedFile(std::string file,
-      boost::property_tree::ptree& pTree) = 0;
+      boost::property_tree::ptree& p_tree) = 0;
     /**
      * Reads a string containing mashupscript code and popules
      * a boost::property_tree object accordingly.
@@ -63,7 +64,7 @@ class MashscriptParser {
      * @return Status or error code for the parsing.
      */
     virtual int ReadFormattedStream(std::string stream,
-      boost::property_tree::ptree& pTree) = 0;
+      boost::property_tree::ptree& p_tree) = 0;
 
   private:
     /**
@@ -73,7 +74,7 @@ class MashscriptParser {
      * @param mashup Mashup object.
      * @return Status or error code for the parsing.
      */
-    int ParseMashup(boost::property_tree::ptree& pTree, Mashup& mashup);
+    int ParseMashup(boost::property_tree::ptree& p_tree, Mashup& mashup);
 };
 
 #endif // MASHUP_COMMON_PARSER_MASHSCRIPTPARSER_

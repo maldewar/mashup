@@ -4,6 +4,8 @@
 
 #include <boost/property_tree/ptree.hpp>
 
+#include "../builder/MashupBuilder.h"
+
 namespace pt = boost::property_tree;
 
 MashscriptParser::MashscriptParser() {
@@ -25,7 +27,12 @@ int MashscriptParser::FromStream(const std::string stream, Mashup& mashup) {
   return PARSER_STATUS_OK;
 };
 
-int MashscriptParser::ParseMashup(boost::property_tree::ptree& pTree, Mashup& mashup) {
-  std::cout << "Mashup title: " << pTree.get<std::string>("mashup.title") <<".\n";
-  return PARSER_STATUS_OK;
+int MashscriptParser::ParseMashup(boost::property_tree::ptree& p_tree, Mashup& mashup) {
+  int result;
+  MashupBuilder* builder = new MashupBuilder();
+  result = builder->Build(mashup, p_tree);
+  if (result < BUILDER_STATUS_OK)
+    result = PARSER_ERROR_BAD_FORMAT;
+  delete builder;
+  return result;
 };
