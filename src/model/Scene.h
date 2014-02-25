@@ -3,6 +3,9 @@
 
 class Scene {
   public:
+    /**
+     * Class constructor.
+     */
     Scene();
 };
 

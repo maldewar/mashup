@@ -6,6 +6,15 @@
 
 #include "AssetQualityDescriptor.h"
 
+/**
+ * @file
+ * @brief Describes an asset.
+ *
+ * The properties are not concern with the file(s) an asset
+ * might have.
+ * @author Waldemar Sánchez
+ * @date February, 2014
+ */
 class AssetDescriptor {
   public:
     /**
@@ -36,7 +45,7 @@ class AssetDescriptor {
     /**
      * Qualities available for the asset.
      */
-    std::vector<AssetQualityDescriptor*>;
+    std::vector<AssetQualityDescriptor*> qualities;
 };
 
 #endif // MASHUP_MODEL_ASSET_DESCRIPTOR_

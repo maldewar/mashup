@@ -6,6 +6,15 @@
 
 #include "AssetQualityDescriptor.h"
 
+/**
+ * @file
+ * @brief Provides quality-related details on an asset's file.
+ *
+ * The properties belong to one file, as an asset might have
+ * many files.
+ * @author Waldemar Sánchez
+ * @date February, 2014
+ */
 class AssetQualityDescriptor {
   public:
     /**
@@ -25,11 +34,11 @@ class AssetQualityDescriptor {
     /**
      * Width in pixels.
      */
-    int naturalWidth;
+    int natural_width;
     /**
      * Height in pixels.
      */
-    int naturalHeight;
+    int natural_height;
 };
 
 #endif // MASHUP_MODEL_ASSET_QUALITY_DESCRIPTOR_
