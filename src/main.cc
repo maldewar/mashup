@@ -7,6 +7,7 @@ namespace po = boost::program_options;
 
 #include "model/Mashup.h"
 #include "common/parser/MashscriptJsonParser.h"
+#include "util/Log.h"
 
 int main(int argc, char *argv[]) {
   try {
@@ -16,7 +17,8 @@ int main(int argc, char *argv[]) {
     po::options_description genericOpts("Generic options");
     genericOpts.add_options()
       ("help,h", "produce help message.")
-      ("version,v", "print the version number.")
+      ("version", "print the version number.")
+      ("verbose,v", "verbosity enabled to level TRACE and DEBUG.")
     ;
     po::options_description configShownOpts("Configuration");
     configShownOpts.add_options()
@@ -52,6 +54,10 @@ int main(int argc, char *argv[]) {
         << vm["input-file"].as<std::string>() << "\n";
     } else {
       std::cout << "Input file not set." << "\n";
+    }
+
+    if (vm.count("verbose")) {
+      Log::SetLevel(Log::TRACE);
     }
     Mashup* mashup = new Mashup();
     MashscriptJsonParser* jsonParser = new MashscriptJsonParser();
