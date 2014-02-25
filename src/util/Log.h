@@ -6,7 +6,8 @@
 
 #include <log4cxx/logger.h>
 
-const std::string LOGGER_PARSER = "common.parser";
+const std::string LOGGER_PARSER  = "common.parser";
+const std::string LOGGER_BUILDER = "common.builder";
 
 #define LOG_TRACE(msg, logger_name) { \
   std::ostringstream oss; \
@@ -48,6 +49,9 @@ const std::string LOGGER_PARSER = "common.parser";
  * @date February, 2014
  */
 class Log {
+  public:
+    enum Level {TRACE, DEBUG, INFO, WARN, ERROR, FATAL};
+
   public:
     /**
      * Log function for trace messages. Lowest level for logging.
@@ -92,12 +96,21 @@ class Log {
      * @param logger_name Name of the logger.
      */
     static void Fatal(const std::string msg, const std::string logger_name);
+    /**
+     * Sets the global level for logging.
+     * @param level Logging level.
+     */
+    static void SetLevel(Level level);
 
   private:
     /**
      * Private constructor for static class.
      */
     Log();
+    /**
+     * Initializes Log4Cxx.
+     */
+    static void Init();
     /**
      * Get a LoggerPtr given the name of a logger.
      * @param logger_name Logger name.
@@ -107,7 +120,7 @@ class Log {
 
   private:
     /**
-     * Constrols static initialization for Log4Cxx.
+     * Controls static initialization for Log4Cxx.
      */
     static bool _is_init;
 
