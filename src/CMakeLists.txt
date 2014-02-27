@@ -1,13 +1,29 @@
-FILE (GLOB_RECURSE project_SRCS *.cpp *.cxx *.cc *.C *.c *.h *.hpp)
+FILE (GLOB_RECURSE project_SRCS main.cc *.cpp *.cxx */*.cc *.C *.c *.h *.hpp)
 SET (project_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES})
 SET (project_BIN ${PROJECT_NAME})
 
+##############
+#  MAIN APP  #
+##############
 ADD_EXECUTABLE(${project_BIN} ${project_SRCS})
 
 TARGET_LINK_LIBRARIES(${project_BIN} ${project_LIBS})
 SET_TARGET_PROPERTIES(${project_BIN} PROPERTIES VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}" OUTPUT_NAME ${project_BIN} CLEAN_DIRECT_OUTPUT 1)
 
 INSTALL(TARGETS ${project_BIN} DESTINATION bin)
+
+###############################
+#  MASHSCRIPT PARSER COMMAND  #
+###############################
+FILE (GLOB_RECURSE mashscript_parser_SRCS mashscript-parser.cc *.cpp *.cxx */*.cc *.C *.c *.h *.hpp)
+SET (mashscript_parser_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES})
+SET (mashscript_parser_BIN "mashscript-parser")
+ADD_EXECUTABLE(${mashscript_parser_BIN} ${mashscript_parser_SRCS})
+
+TARGET_LINK_LIBRARIES(${mashscript_parser_BIN} ${project_LIBS})
+SET_TARGET_PROPERTIES(${mashscript_parser_BIN} PROPERTIES VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}" OUTPUT_NAME ${mashscript_parser_BIN} CLEAN_DIRECT_OUTPUT 1)
+
+INSTALL(TARGETS ${mashscript_parser_BIN} DESTINATION bin)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
