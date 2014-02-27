@@ -41,10 +41,6 @@ class Mashup {
      */
     long int creator_id;
     /**
-     * Base path for all the assets.
-     */
-    std::string assets_path;
-    /**
      * Descriptors for the assets participating on this mashup.
      */
     std::vector<AssetDescriptor*> assets;

@@ -1,6 +1,5 @@
 {
     "version": "0.1a",
-    "assetsPath": "/home/waldemar/Projects/assets/video", //Optional
     "id": "",
     "title": "Let it be ノロウイルス", //USER
     "creatorId": 123,
@@ -8,7 +7,7 @@
         {
             "id": 1,
             "type": "video",
-            "length": "00:00:54.85",
+            "length": 54850,
             "quality": [
                 {
                     "path": "letitbe01.avi", //Optional
@@ -27,7 +26,7 @@
         {
             "id": 2,
             "type": "video",
-            "length": "00:00:54.88",
+            "length": 54880,
             "quality": [
                 {
                     "path": "letitbe02.avi", //Optional
@@ -46,7 +45,7 @@
         {
             "id": 3,
             "type": "video",
-            "length": "00:00:54.85",
+            "length": 54850,
             "quality": [
                 {
                     "path": "letitbe03.avi", //Optional
