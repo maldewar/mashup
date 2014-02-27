@@ -60,6 +60,7 @@ void Log::SetLevel(Level level) {
 };
 
 void Log::Init() {
+  setlocale(LC_ALL, "");
   log4cxx::LoggerPtr rootlogger = log4cxx::Logger::getRootLogger();
   rootlogger->addAppender(new log4cxx::ConsoleAppender(new log4cxx::PatternLayout("[%-5p] %m%n")));
   _is_init = true;
