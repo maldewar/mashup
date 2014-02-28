@@ -66,6 +66,7 @@
         "camera": "fixed",
         "width": 640,
         "height": 480,
+        "length": 54800,
         "actors": [
             {
                 "assetId": 1,

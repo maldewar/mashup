@@ -46,6 +46,22 @@ class MashupBuilder {
     int AppendAssetDescriptors(Mashup& mashup,
                                const boost::property_tree::ptree& p_tree);
     /**
+     * Appends Actor objects to a given Scene object, taking values
+     * from a boost::property_tree object.
+     * @param scene  Scene object.
+     * @param p_tree Property tree object.
+     * @return Status or error code on the building of Actor objects.
+     */
+    int AppendActors(Scene& scene, const boost::property_tree::ptree& p_tree);
+    /**
+     * Appeds Transition objects to a given Scene object, taking values
+     * from a boost::property_tree object.
+     * @param scene  Scene object.
+     * @param p_tree Property tree object.
+     * @return Status or error code on the building of Transition objects.
+     */
+    int AppendTransitions(Scene& scene, const boost::property_tree::ptree& p_tree);
+    /**
      * Gets the asset type enum value given a string value.
      * @param type String value for type.
      * @return Asset Type enum value.
@@ -71,6 +87,13 @@ class MashupBuilder {
      */
     int BuildAssetQualityDescriptor(AssetQualityDescriptor& quality_descriptor,
                              const boost::property_tree::ptree& p_tree);
+    /**
+     * Builds a Scene object with values taken from a boost::property_tree.
+     * @param scene  Scene object.
+     * @param p_tree Property tree object.
+     * @return Status or error code about the building.
+     */
+    int BuildScene(Scene& scene, const boost::property_tree::ptree& p_tree);
 };
 
 #endif // MASHUP_COMMON_BUILDER_MASHUPBUILDER_

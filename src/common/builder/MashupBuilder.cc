@@ -21,6 +21,22 @@ int MashupBuilder::Build(Mashup& mashup,
       p_tree.get_child_optional("assets")) {
     AppendAssetDescriptors(mashup, p_assets.get());
   }
+  if (boost::optional<const pt::ptree&> p_scene =
+      p_tree.get_child_optional("scene")) {
+    int result;
+    Scene* scene = new Scene();
+    result = BuildScene(*scene, p_scene.get());
+    if (result == BUILDER_STATUS_OK)
+      mashup.scene = scene;
+    else {
+      delete scene;
+      return result;
+    }
+  } else {
+    LOG_ERROR("No scene descriptor found for mashup " << mashup.id,
+              LOGGER_BUILDER);
+    return BUILDER_ERROR_REQUIRED_PROPERTY;
+  }
   return BUILDER_STATUS_OK;
 };
 
@@ -90,5 +106,15 @@ int MashupBuilder::BuildAssetQualityDescriptor(AssetQualityDescriptor& asset_qua
   LOG_TRACE("  AQDesc bitrate: "<< asset_quality_desc.bitrate, LOGGER_BUILDER);
   LOG_TRACE("  AQDesc natural width: "<< asset_quality_desc.natural_width, LOGGER_BUILDER);
   LOG_TRACE("  AQDesc natural height: "<< asset_quality_desc.natural_height, LOGGER_BUILDER);
+  return BUILDER_STATUS_OK;
+};
+
+int MashupBuilder::BuildScene(Scene& scene, const boost::property_tree::ptree& p_tree) {
+  scene.width  = p_tree.get<int>("width", 0);
+  scene.height = p_tree.get<int>("height", 0);
+  scene.length = p_tree.get<int>("length", 0);
+  LOG_TRACE(" Scene width: " << scene.width, LOGGER_BUILDER);
+  LOG_TRACE(" Scene height: " << scene.height, LOGGER_BUILDER);
+  LOG_TRACE(" Scene length: " << scene.length, LOGGER_BUILDER);
   return BUILDER_STATUS_OK;
 };
