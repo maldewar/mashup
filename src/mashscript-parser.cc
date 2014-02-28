@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
@@ -45,8 +46,17 @@ int main(int argc, char *argv[]) {
     po::notify(vm);    
 
     if (vm.count("help")) {
+      boost::filesystem::path p = argv[0];
+      std::string exe_name = p.stem().string();
+      std::cout << "Parser for Mashscript documents.\n";
+      std::cout << "usage: " << exe_name << " [options] infile";
       std::cout << printOpts << "\n";
-      return 1;
+      return 0;
+    }
+
+    if (vm.count("version")) {
+      std::cout << "Parser for Mashscript documents, version 1.0\n";
+      return 0;
     }
 
     if (vm.count("input-file")) {
