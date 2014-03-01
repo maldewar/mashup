@@ -53,6 +53,39 @@ int MashupBuilder::AppendAssetDescriptors(Mashup& mashup,
     else
       delete asset_desc;
   }
+  return BUILDER_STATUS_OK;
+};
+
+int MashupBuilder::AppendActors(Scene& scene,
+          const boost::property_tree::ptree& p_tree) {
+  int result;
+  for (const auto& value_type_actor: p_tree) {
+    //value_type_actor is ptree::value_type
+    const pt::ptree& p_actor = value_type_actor.second;
+    Actor* actor = new Actor();
+    result = BuildActor(*actor, p_actor);
+    if (result == BUILDER_STATUS_OK)
+      scene.actors.push_back(actor);
+    else
+      delete actor;
+  }
+  return BUILDER_STATUS_OK;
+};
+
+int MashupBuilder::AppendTransitions(Scene& scene,
+          const boost::property_tree::ptree& p_tree) {
+  int result;
+  for (const auto& value_type_transition: p_tree) {
+    //value_type_transition is ptree::value_type
+    const pt::ptree& p_transition = value_type_transition.second;
+    Transition* transition = new Transition();
+    result = BuildTransition(*transition, p_transition);
+    if (result == BUILDER_STATUS_OK)
+      scene.transitions.push_back(transition);
+    else
+      delete transition;
+  }
+  return BUILDER_STATUS_OK;
 };
 
 AssetDescriptor::Type MashupBuilder::GetAssetType(const std::string type) {
@@ -63,6 +96,26 @@ AssetDescriptor::Type MashupBuilder::GetAssetType(const std::string type) {
   if (type.compare("image") == 0)
     return AssetDescriptor::Type::Image;
   return AssetDescriptor::Type::Undef;
+};
+
+Transition::Target MashupBuilder::GetTransitionTarget(const std::string target) {
+  if (target.compare("") == 0)
+    return Transition::Target::Undef;
+  if (target.compare("position") == 0)
+    return Transition::Target::Position;
+  if (target.compare("dimension") == 0)
+    return Transition::Target::Dimension;
+  if (target.compare("rotation") == 0)
+    return Transition::Target::Rotation;
+  if (target.compare("scale") == 0)
+    return Transition::Target::Scale;
+  if (target.compare("opacity") == 0)
+    return Transition::Target::Opacity;
+  if (target.compare("volume") == 0)
+    return Transition::Target::Volume;
+  if (target.compare("color") == 0)
+    return Transition::Target::Color;
+  return Transition::Target::Undef;
 };
 
 int MashupBuilder::BuildAssetDescriptor(AssetDescriptor& asset_desc,
@@ -116,5 +169,58 @@ int MashupBuilder::BuildScene(Scene& scene, const boost::property_tree::ptree& p
   LOG_TRACE(" Scene width: " << scene.width, LOGGER_BUILDER);
   LOG_TRACE(" Scene height: " << scene.height, LOGGER_BUILDER);
   LOG_TRACE(" Scene length: " << scene.length, LOGGER_BUILDER);
+  if (boost::optional<const pt::ptree&> p_actors =
+      p_tree.get_child_optional("actors")) {
+    AppendActors(scene, p_actors.get());
+  }
+  if (boost::optional<const pt::ptree&> p_transitions =
+      p_tree.get_child_optional("transitions")) {
+    AppendTransitions(scene, p_transitions.get());
+  }
   return BUILDER_STATUS_OK;
+};
+
+int MashupBuilder::BuildActor(Actor& actor, const boost::property_tree::ptree& p_tree) {
+  actor.asset_id    = p_tree.get<long int>("assetId", 0);
+  actor.instance_id = p_tree.get<int>("instanceId", 0);
+  actor.x         = p_tree.get<double>("x", 0);
+  actor.y         = p_tree.get<double>("y", 0);
+  actor.z         = p_tree.get<int>("z", 0);
+  actor.width     = p_tree.get<double>("width", 0);
+  actor.height    = p_tree.get<double>("height", 0);
+  actor.rotation  = p_tree.get<double>("rotation", 0);
+  actor.enters_at = p_tree.get<int>("entersAt", 0);
+  actor.exits_at  = p_tree.get<int>("exitsAt", 0);
+  LOG_TRACE(" Actor asset ID: " << actor.asset_id, LOGGER_BUILDER);
+  LOG_TRACE(" Actor instance ID: " << actor.instance_id, LOGGER_BUILDER);
+  LOG_TRACE(" Actor x: " << actor.x, LOGGER_BUILDER);
+  LOG_TRACE(" Actor y: " << actor.y, LOGGER_BUILDER);
+  LOG_TRACE(" Actor z: " << actor.z, LOGGER_BUILDER);
+  LOG_TRACE(" Actor width: " << actor.width, LOGGER_BUILDER);
+  LOG_TRACE(" Actor height: " << actor.height, LOGGER_BUILDER);
+  LOG_TRACE(" Actor rotation: " << actor.rotation, LOGGER_BUILDER);
+  LOG_TRACE(" Actor enters at: " << actor.enters_at, LOGGER_BUILDER);
+  LOG_TRACE(" Actor exists_at: " << actor.exits_at, LOGGER_BUILDER);
+  return BUILDER_STATUS_OK;
+};
+
+int MashupBuilder::BuildTransition(Transition& transition,
+                      const boost::property_tree::ptree& p_tree) {
+  transition.asset_id    = p_tree.get<long int>("assetId", 0);
+  transition.instance_id = p_tree.get<int>("instanceId", 0);
+  transition.target = GetTransitionTarget(p_tree.get<std::string>("target",""));
+  if (transition.target == Transition::Target::Undef) {
+    LOG_WARN("Transition for asset " << transition.asset_id << ":"
+            << transition.instance_id << " has no valid target specified.",
+            LOGGER_BUILDER);
+    return BUILDER_ERROR_REQUIRED_PROPERTY;
+  }
+  transition.starts_at = p_tree.get<int>("startsAt", 0);
+  transition.duration = p_tree.get<int>("duration", 0);
+  //TODO: setter for SingleValue, DoubleValue, TripleValue, QuadValue.
+  LOG_TRACE(" Transition asset ID: " << transition.asset_id, LOGGER_BUILDER);
+  LOG_TRACE(" Transition instance ID: " << transition.instance_id, LOGGER_BUILDER);
+  LOG_TRACE(" Transition target: " << transition.target, LOGGER_BUILDER);
+  LOG_TRACE(" Transition starts at: " << transition.starts_at, LOGGER_BUILDER);
+  LOG_TRACE(" Transition duration: " << transition.duration, LOGGER_BUILDER);
 };

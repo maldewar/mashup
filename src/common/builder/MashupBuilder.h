@@ -67,6 +67,12 @@ class MashupBuilder {
      * @return Asset Type enum value.
      */
     AssetDescriptor::Type GetAssetType(const std::string type);
+    /**
+     * Gets the trasition target enum value given a string value.
+     * @param target String value for the target.
+     * @return Transition target enum value.
+     */
+    Transition::Target GetTransitionTarget(const std::string target);
 
   private:
     /**
@@ -94,6 +100,21 @@ class MashupBuilder {
      * @return Status or error code about the building.
      */
     int BuildScene(Scene& scene, const boost::property_tree::ptree& p_tree);
+    /**
+     * Builds an Actor object with values taken from a boost::property_tree.
+     * @param actor  Actor object.
+     * @param p_tree Property tree object.
+     * @return Status or error code about the building.
+     */
+    int BuildActor(Actor& actor, const boost::property_tree::ptree& p_tree);
+    /**
+     * Builds a Transition object with values taken from a boost::property_tree.
+     * @param transition Transition object.
+     * @param p_tree     Property tree object.
+     * @return Status or error code about  the building.
+     */
+    int BuildTransition(Transition& transition,
+                        const boost::property_tree::ptree& p_tree);
 };
 
 #endif // MASHUP_COMMON_BUILDER_MASHUPBUILDER_

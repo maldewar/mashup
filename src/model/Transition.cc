@@ -6,7 +6,7 @@ Transition::Transition() {
   target = Transition::Target::Undef;
   start_value = nullptr;
   end_value = nullptr;
-  start_at = 0;
+  starts_at = 0;
   duration = 0;
   easing = Transition::Easing::Linear;
 };
