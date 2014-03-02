@@ -4,7 +4,6 @@
 #include "../common/SingleValue.h"
 
 /**
- * @file
  * @brief Contains parameters to transition values on an asset.
  *
  * Contains parameters used to progress from an initial value to
@@ -20,6 +19,9 @@ class Transition {
     Transition();
 
   public:
+    /**
+     * Target property on asset.
+     */
     enum Target {
       Undef,
       Position,
@@ -30,6 +32,9 @@ class Transition {
       Volume,
       Color
     };
+    /**
+     * Function for transition.
+     */
     enum Easing {
       Linear
     };

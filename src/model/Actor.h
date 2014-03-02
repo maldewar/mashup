@@ -2,7 +2,6 @@
 #define MASHUP_MODEL_ACTOR_
 
 /**
- * @file
  * @brief Contains initialization values for assets entering a scene.
  *
  * The initialization values depend on the type of asset the actor

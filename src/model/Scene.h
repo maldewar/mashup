@@ -7,7 +7,6 @@
 #include "Transition.h"
 
 /**
- * @file
  * @brief Instruction for actors and transitions.
  *
  * The object may include cameras, specification on the display area,

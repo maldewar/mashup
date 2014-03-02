@@ -6,41 +6,65 @@
 
 #include <log4cxx/logger.h>
 
+/**
+ * Logger name for parsing streams or file content.
+ */
 const std::string LOGGER_PARSER  = "common.parser";
+
+/**
+ * Logger name for building objects.
+ */
 const std::string LOGGER_BUILDER = "common.builder";
 
+/**
+ * Macro for logging trace messages.
+ */
 #define LOG_TRACE(msg, logger_name) { \
   std::ostringstream oss; \
   oss << msg; \
   Log::Trace(oss.str(), logger_name); }
 
+/**
+ * Macro for logging debug messages.
+ */
 #define LOG_DEBUG(msg, logger_name) { \
   std::ostringstream oss; \
   oss << msg; \
   Log::Debug(oss.str(), logger_name); }
 
+/**
+ * Macro for logging info messages.
+ */
 #define LOG_INFO(msg, logger_name) { \
   std::ostringstream oss; \
   oss << msg; \
   Log::Info(oss.str(), logger_name); }
 
+/**
+ * Macro for logging warning messages.
+ */
 #define LOG_WARN(msg, logger_name) { \
   std::ostringstream oss; \
   oss << msg; \
   Log::Warn(oss.str(), logger_name); }
 
+/**
+ * Macro for logging error messages.
+ */
 #define LOG_ERROR(msg, logger_name) { \
   std::ostringstream oss; \
   oss << msg; \
   Log::Error(oss.str(), logger_name); }
 
+/**
+ * Macro for logging fatal messages.
+ */
 #define LOG_FATAL(msg, logger_name) { \
   std::ostringstream oss; \
   oss << msg; \
   Log::Fatal(oss.str(), logger_name); }
 
 /**
- * @file
  * @brief Logging class.
  *
  * This class is intended to work as a wrapper class for
@@ -50,6 +74,9 @@ const std::string LOGGER_BUILDER = "common.builder";
  */
 class Log {
   public:
+    /**
+     * Log level.
+     */
     enum Level {TRACE, DEBUG, INFO, WARN, ERROR, FATAL};
 
   public:

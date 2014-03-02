@@ -9,11 +9,17 @@
 #include "../../model/Mashup.h"
 #include "../../model/AssetDescriptor.h"
 
-const int BUILDER_STATUS_OK               = 0;
+/**
+ * Everything was OK with building the object.
+ */
+const int BUILDER_STATUS_OK = 0;
+
+/**
+ * Error due the lack of a required property.
+ */
 const int BUILDER_ERROR_REQUIRED_PROPERTY = -1;
 
 /**
- * @file
  * @brief Populates Mashup objects with their properties.
  *
  * The builder uses a boost::property_tree object to

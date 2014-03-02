@@ -8,13 +8,28 @@
 #include "MashscriptParser.h"
 #include "../../model/Mashup.h"
 
-const int PARSER_STATUS_OK          = 0;
-const int PARSER_ERROR_READING_FILE = -1;
-const int PARSER_ERROR_BAD_FORMAT   = -2;
-const int PARSER_ERROR_UNKNOWN      = -3;
+/**
+ * Everything was OK with the parsing of data.
+ */
+const int PARSER_STATUS_OK = 0;
 
 /**
- * @file
+ * Error related to the file containing the data.
+ */
+const int PARSER_ERROR_READING_FILE = -1;
+
+/**
+ * Error related to the syntaxis or semantic of
+ * content of data.
+ */
+const int PARSER_ERROR_BAD_FORMAT = -2;
+
+/**
+ * Unknown error when parsing.
+ */
+const int PARSER_ERROR_UNKNOWN = -3;
+
+/**
  * @brief Base class for parsing mashscript files or streams.
  *
  * The parser classes extending this base class should implement
@@ -48,19 +63,19 @@ class MashscriptParser {
 
   protected:
     /**
-     * Reads a file containing mashupscript code and popules
+     * Reads a file containing mashscript code and populates
      * a boost::property_tree object accordingly.
-     * @param file  Path to file.
-     * @param pTree Property tree to populate.
+     * @param file   Path to file.
+     * @param p_tree Property tree to populate.
      * @return Status or error code for the parsing.
      */
     virtual int ReadFormattedFile(std::string file,
       boost::property_tree::ptree& p_tree) = 0;
     /**
-     * Reads a string containing mashupscript code and popules
+     * Reads a string containing mashscript code and populates
      * a boost::property_tree object accordingly.
-     * @param file  Path to file.
-     * @param pTree Property tree to populate.
+     * @param stream String containing JSON formatted mashscript data.
+     * @param p_tree Property tree to populate.
      * @return Status or error code for the parsing.
      */
     virtual int ReadFormattedStream(std::string stream,

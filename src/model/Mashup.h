@@ -8,7 +8,6 @@
 #include "Scene.h"
 
 /**
- * @file
  * @brief Container for instructions for building a mashup.
  *
  * The full instructions must contain descriptors for all the

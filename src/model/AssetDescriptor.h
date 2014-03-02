@@ -7,7 +7,6 @@
 #include "AssetQualityDescriptor.h"
 
 /**
- * @file
  * @brief Describes an asset.
  *
  * The properties are not concern with the file(s) an asset
@@ -23,6 +22,9 @@ class AssetDescriptor {
     AssetDescriptor();
 
   public:
+    /**
+     * Type of media.
+     */
     enum Type
     {
         Undef,

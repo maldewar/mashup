@@ -7,7 +7,6 @@
 #include "AssetQualityDescriptor.h"
 
 /**
- * @file
  * @brief Provides quality-related details on an asset's file.
  *
  * The properties belong to one file, as an asset might have
