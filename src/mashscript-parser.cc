@@ -8,6 +8,7 @@ namespace po = boost::program_options;
 
 #include "model/Mashup.h"
 #include "common/parser/MashscriptJsonParser.h"
+#include "common/inspector/MashupInspector.h"
 #include "util/Log.h"
 
 int main(int argc, char *argv[]) {
@@ -63,7 +64,8 @@ int main(int argc, char *argv[]) {
       std::cout << "Input file set to "
         << vm["input-file"].as<std::string>() << "\n";
     } else {
-      std::cout << "Input file not set." << "\n";
+      std::cerr << "Input file not set." << "\n";
+      return 1;
     }
 
     if (vm.count("verbose")) {
@@ -72,6 +74,7 @@ int main(int argc, char *argv[]) {
     Mashup* mashup = new Mashup();
     MashscriptJsonParser* jsonParser = new MashscriptJsonParser();
     jsonParser->FromFile(inputFile, *mashup);
+    std::cout << MashupInspector::Print(*mashup);
   } catch(std::exception& e) {
     std::cerr << "error: " << e.what() << "\n";
     return 1;

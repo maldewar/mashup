@@ -82,6 +82,7 @@ ADD_SUBDIRECTORY(src/util)
 ADD_SUBDIRECTORY(src/common)
 ADD_SUBDIRECTORY(src/common/builder)
 ADD_SUBDIRECTORY(src/common/parser)
+ADD_SUBDIRECTORY(src/common/inspector)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)
 

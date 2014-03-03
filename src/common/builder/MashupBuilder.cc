@@ -223,4 +223,5 @@ int MashupBuilder::BuildTransition(Transition& transition,
   LOG_TRACE(" Transition target: " << transition.target, LOGGER_BUILDER);
   LOG_TRACE(" Transition starts at: " << transition.starts_at, LOGGER_BUILDER);
   LOG_TRACE(" Transition duration: " << transition.duration, LOGGER_BUILDER);
+  return BUILDER_STATUS_OK;
 };
