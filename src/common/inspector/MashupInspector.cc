@@ -2,6 +2,7 @@
 
 #include "../../util/Log.h"
 #include "../../util/Print.h"
+#include "../BaseProperty.h"
 
 MashupInspector::MashupInspector() {};
 
@@ -101,7 +102,7 @@ void MashupInspector::Print(const Transition& transition,
                             std::stringstream& out, int indent) {
   Print::Duple("Asset ID", transition.asset_id, out, indent);
   Print::Duple("Asset Inst", transition.instance_id, out, indent);
-  Print::Duple("Target", transition.target, out, indent);
+  Print::Duple("Target", BaseProperty::Get(transition.target), out, indent);
   Print::Duple("Starts at", transition.starts_at, out, indent);
   Print::Duple("Duration", transition.duration, out, indent);
   Print::Duple("Easing", transition.easing, out, indent);

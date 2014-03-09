@@ -5,7 +5,6 @@
 
 #include <boost/property_tree/ptree.hpp>
 
-#include "MashupBuilder.h"
 #include "../../model/Mashup.h"
 #include "../../model/AssetDescriptor.h"
 
@@ -73,12 +72,6 @@ class MashupBuilder {
      * @return Asset Type enum value.
      */
     AssetDescriptor::Type GetAssetType(const std::string type);
-    /**
-     * Gets the trasition target enum value given a string value.
-     * @param target String value for the target.
-     * @return Transition target enum value.
-     */
-    Transition::Target GetTransitionTarget(const std::string target);
 
   private:
     /**

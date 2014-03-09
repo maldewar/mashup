@@ -15,7 +15,7 @@
  * @date February, 2014
  */
 class Print {
-  public:
+  //public:
     /**
      * Character used to tabulate columns.
      */
@@ -66,6 +66,7 @@ class Print {
 
 };
 
+Print::Print(){};
 char Print::separator = ' ';
 std::string Print::field_separator = "";
 int Print::field_width = 10;

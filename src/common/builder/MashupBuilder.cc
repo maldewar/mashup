@@ -1,6 +1,7 @@
 #include "MashupBuilder.h"
 
 #include "../../util/Log.h"
+#include "../BaseProperty.h"
 
 namespace pt = boost::property_tree;
 
@@ -98,26 +99,6 @@ AssetDescriptor::Type MashupBuilder::GetAssetType(const std::string type) {
   return AssetDescriptor::Type::Undef;
 };
 
-Transition::Target MashupBuilder::GetTransitionTarget(const std::string target) {
-  if (target.compare("") == 0)
-    return Transition::Target::Undef;
-  if (target.compare("position") == 0)
-    return Transition::Target::Position;
-  if (target.compare("dimension") == 0)
-    return Transition::Target::Dimension;
-  if (target.compare("rotation") == 0)
-    return Transition::Target::Rotation;
-  if (target.compare("scale") == 0)
-    return Transition::Target::Scale;
-  if (target.compare("opacity") == 0)
-    return Transition::Target::Opacity;
-  if (target.compare("volume") == 0)
-    return Transition::Target::Volume;
-  if (target.compare("color") == 0)
-    return Transition::Target::Color;
-  return Transition::Target::Undef;
-};
-
 int MashupBuilder::BuildAssetDescriptor(AssetDescriptor& asset_desc,
                                const boost::property_tree::ptree& p_tree) {
   asset_desc.id     = p_tree.get<long int>("id", 0);
@@ -208,8 +189,8 @@ int MashupBuilder::BuildTransition(Transition& transition,
                       const boost::property_tree::ptree& p_tree) {
   transition.asset_id    = p_tree.get<long int>("assetId", 0);
   transition.instance_id = p_tree.get<int>("instanceId", 0);
-  transition.target = GetTransitionTarget(p_tree.get<std::string>("target",""));
-  if (transition.target == Transition::Target::Undef) {
+  transition.target = BaseProperty::Get(p_tree.get<std::string>("target",""));
+  if (transition.target == BaseProperty::Target::Undef) {
     LOG_WARN("Transition for asset " << transition.asset_id << ":"
             << transition.instance_id << " has no valid target specified.",
             LOGGER_BUILDER);

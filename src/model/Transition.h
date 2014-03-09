@@ -1,7 +1,8 @@
 #ifndef MASHUP_MODEL_TRANSITION_
 #define MASHUP_MODEL_TRANSITION_
 
-#include "../common/SingleValue.h"
+#include "../common/BaseValue.h"
+#include "../common/BaseProperty.h"
 
 /**
  * @brief Contains parameters to transition values on an asset.
@@ -20,19 +21,6 @@ class Transition {
 
   public:
     /**
-     * Target property on asset.
-     */
-    enum Target {
-      Undef,
-      Position,
-      Dimension,
-      Rotation,
-      Scale,
-      Opacity,
-      Volume,
-      Color
-    };
-    /**
      * Function for transition.
      */
     enum Easing {
@@ -50,16 +38,16 @@ class Transition {
     /**
      * Target value or property on the asset for the transition.
      */
-    Target target;
+    BaseProperty::Target target;
     /**
      * Initial value for the transition, if NULL then the value
      * set on the asset is used instead.
      */
-    SingleValue* start_value;
+    BaseValue* start_value;
     /**
      * Target value for the transition, required.
      */
-    SingleValue* end_value;
+    BaseValue* end_value;
     /**
      * Time in milliseconds when the transition should being,
      * relative to the whole length of the mashup containing it.
