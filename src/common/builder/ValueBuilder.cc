@@ -2,8 +2,8 @@
 
 ValueBuilder::ValueBuilder() {};
 
-BaseValue* ValueBuilder::Get() {
-  BaseValue* value = new BaseValue(0);
+EmptyValue* ValueBuilder::Get() {
+  EmptyValue* value = new EmptyValue();
   return value;
 };
 
@@ -50,4 +50,20 @@ TripleValue* ValueBuilder::Get(double value_a,
                                double value_c) {
   TripleValue* triple_value = new TripleValue(value_a, value_b, value_c);
   return triple_value;
+};
+
+int ValueBuilder::GetTupleSize(BaseProperty::Target target) {
+  switch(target) {
+    case BaseProperty::Target::Rotation:
+    case BaseProperty::Target::Scale:
+    case BaseProperty::Target::Opacity:
+    case BaseProperty::Target::Volume:
+      return 1;
+    case BaseProperty::Target::Position:
+    case BaseProperty::Target::Dimension:
+      return 2;
+    case BaseProperty::Target::Color:
+      return 3;
+  }
+  return 0;
 };

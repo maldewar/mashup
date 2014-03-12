@@ -106,4 +106,6 @@ void MashupInspector::Print(const Transition& transition,
   Print::Duple("Starts at", transition.starts_at, out, indent);
   Print::Duple("Duration", transition.duration, out, indent);
   Print::Duple("Easing", transition.easing, out, indent);
+  Print::Duple("From", transition.start_value->ToString(), out, indent);
+  Print::Duple("To", transition.end_value->ToString(), out, indent);
 };

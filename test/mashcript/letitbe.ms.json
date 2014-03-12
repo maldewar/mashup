@@ -102,8 +102,17 @@
         "transitions": [
             {
                 "assetId": 1,
+                "target": "position",
+                "startValue": [1, 1],
+                "endValue": [0.5, 0.5],
+                "startsAt": 2000,
+                "duration": 3000,
+                "easing": "linear"
+            },
+            {
+                "assetId": 1,
                 "target": "opacity",
-                "startValue": 0,
+                "startValue": 10,
                 "endValue": 1,
                 //startsAt
                 "duration": 2000,

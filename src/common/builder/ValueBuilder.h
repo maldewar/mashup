@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "ValueBuilder.h"
+#include "../EmptyValue.h"
 #include "../SingleValue.h"
 #include "../DoubleValue.h"
 #include "../TripleValue.h"
@@ -24,7 +25,7 @@ class ValueBuilder {
      * Gets an empty value instance.
      * @return Empty value instance.
      */
-    static BaseValue* Get();
+    static EmptyValue* Get();
     /**
      * Gets a BaseValue derived class according to the 
      * property represented.
@@ -57,6 +58,13 @@ class ValueBuilder {
      * @return Triple value instance.
      */
     static TripleValue* Get(double value_a, double value_b, double value_c);
+    /**
+     * Returns the number of expected values for a tuple
+     * given the property represented.
+     * @param target Property enum.
+     * @return Number of elements for the tuple.
+     */
+    static int GetTupleSize(BaseProperty::Target target);
 
   private:
     /**

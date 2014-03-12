@@ -10,7 +10,7 @@
  * @author Waldemar Sánchez
  * @date February, 2014
  */
-class SingleValue : public BaseValue {
+class SingleValue : virtual public BaseValue {
   public:
     /**
      * Class constructor.
@@ -27,6 +27,7 @@ class SingleValue : public BaseValue {
      * @return Value contained.
      */
     double Get();
+    std::string ToString();
 
   protected:
     /**

@@ -1,6 +1,8 @@
 #ifndef MASHUP_COMMON_BASE_VALUE_
 #define MASHUP_COMMON_BASE_VALUE_
 
+#include <string>
+
 /**
  * @brief Base class for all values.
  *
@@ -14,8 +16,9 @@ class BaseValue {
      * Class constructor.
      */
     BaseValue(int size);
+    virtual std::string ToString() = 0; //TODO: substitute for operator<<
 
-  protected:
+  public:
     /**
      * Indicates the number of values
      * this implentation holds.

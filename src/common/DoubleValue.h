@@ -11,7 +11,7 @@
  * @author Waldemar Sánchez
  * @date February, 2014
  */
-class DoubleValue : public BaseValue {
+class DoubleValue : virtual public BaseValue {
   public:
     /**
      * Class constructor.
@@ -28,6 +28,12 @@ class DoubleValue : public BaseValue {
      * @return Tuple value.
      */
     std::tuple<double, double> Get();
+    std::string ToString();
+    /*friend std::ostream& operator<< (std::ostream& stream,
+                                     const DoubleValue& double_value) {
+      return stream << "("<< std::get<0>(double_value.value)
+                    << ", " << std::get<1>(double_value.value) << ")";
+    };*/
 
   protected:
     /**

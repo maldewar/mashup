@@ -2,6 +2,7 @@
 
 #include "../../util/Log.h"
 #include "../BaseProperty.h"
+#include "ValueBuilder.h"
 
 namespace pt = boost::property_tree;
 
@@ -198,7 +199,47 @@ int MashupBuilder::BuildTransition(Transition& transition,
   }
   transition.starts_at = p_tree.get<int>("startsAt", 0);
   transition.duration = p_tree.get<int>("duration", 0);
-  //TODO: setter for SingleValue, DoubleValue, TripleValue, QuadValue.
+  int tuple_size = ValueBuilder::GetTupleSize(transition.target);
+  boost::optional<const pt::ptree&> p_start_values = p_tree.get_child_optional("startValue");
+  boost::optional<const pt::ptree&> p_end_values = p_tree.get_child_optional("endValue");
+  if (tuple_size > 0 && p_end_values) { // End value parsing.
+    if (tuple_size > 1) {
+      std::vector<double> v_values;
+      for (const auto& pt_end_val : p_end_values.get()) {
+        v_values.push_back(pt_end_val.second.get<double>(""));
+      }
+      if (tuple_size == 2) {
+        transition.end_value = ValueBuilder::Get(v_values[0], v_values[1]);
+      } else {
+        transition.end_value = ValueBuilder::Get(v_values[0], v_values[1] , v_values[2]);
+      }
+      std::vector<double>().swap(v_values);
+    } else {
+      transition.end_value = ValueBuilder::Get(p_tree.get<double>("endValue", 0));
+    }
+  } else {
+    LOG_WARN("Transition for asset " << transition.asset_id << ":"
+            << transition.instance_id << " has no valid endValue.", LOGGER_BUILDER);
+    return BUILDER_ERROR_REQUIRED_PROPERTY;
+  }
+  if (tuple_size > 0 && p_start_values) { // Start value parsing.
+    if (tuple_size > 1) {
+      std::vector<double> v_values;
+      for (const auto& pt_start_val : p_start_values.get()) {
+        v_values.push_back(pt_start_val.second.get<double>(""));
+      }
+      if (tuple_size == 2) {
+        transition.start_value = ValueBuilder::Get(v_values[0], v_values[1]);
+      } else {
+        transition.start_value = ValueBuilder::Get(v_values[0], v_values[1] , v_values[2]);
+      }
+      std::vector<double>().swap(v_values);
+    } else {
+      transition.start_value = ValueBuilder::Get(p_tree.get<double>("startValue", 0));
+    }
+  } else {
+    transition.start_value = ValueBuilder::Get();
+  }
   LOG_TRACE(" Transition asset ID: " << transition.asset_id, LOGGER_BUILDER);
   LOG_TRACE(" Transition instance ID: " << transition.instance_id, LOGGER_BUILDER);
   LOG_TRACE(" Transition target: " << transition.target, LOGGER_BUILDER);
