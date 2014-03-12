@@ -27,6 +27,10 @@ class SingleValue : virtual public BaseValue {
      * @return Value contained.
      */
     double Get();
+    /**
+     * String representation for the contained value.
+     * @return Print ready string.
+     */
     std::string ToString();
 
   protected:

@@ -29,13 +29,11 @@ class TripleValue : virtual public BaseValue {
      * @return Tuple for this value.
      */
     std::tuple<double, double, double> Get();
+    /**
+     * String representation for the contained value.
+     * @return Print ready string.
+     */
     std::string ToString();
-    /*friend std::ostream& operator<< (std::ostream& stream,
-                                     const TripleValue& triple_value) {
-      return stream << "("<< std::get<0>(triple_value.value)
-                    << ", " << std::get<1>(triple_value.value)
-                    << ", " << std::get<2>(triple_value.value) << ")";
-    };*/
 
   protected:
     /**

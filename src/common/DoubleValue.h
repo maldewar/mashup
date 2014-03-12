@@ -28,12 +28,11 @@ class DoubleValue : virtual public BaseValue {
      * @return Tuple value.
      */
     std::tuple<double, double> Get();
+    /**
+     * String representation for the contained value.
+     * @return Print ready string.
+     */
     std::string ToString();
-    /*friend std::ostream& operator<< (std::ostream& stream,
-                                     const DoubleValue& double_value) {
-      return stream << "("<< std::get<0>(double_value.value)
-                    << ", " << std::get<1>(double_value.value) << ")";
-    };*/
 
   protected:
     /**

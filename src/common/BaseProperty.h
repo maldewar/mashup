@@ -63,6 +63,11 @@ class BaseProperty {
      * @return Target property enum value.
      */
     static Target Get(const std::string target);
+    /**
+     * Gets the string value for a property given its enum value.
+     * @param target Enum value for the property.
+     * @return String value for the property.
+     */
     static std::string Get(const BaseProperty::Target target);
 
   private:

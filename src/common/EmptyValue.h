@@ -16,11 +16,11 @@ class EmptyValue : virtual public BaseValue {
      * Class constructor.
      */
     EmptyValue();
+    /**
+     * String representation for the contained value.
+     * @return Print ready string.
+     */
     std::string ToString();
-    /*friend std::ostream& operator<< (std::ostream& stream,
-                                     const EmptyValue& empty_value) {
-      return stream << "<empty>";
-    };*/
 
 };
 

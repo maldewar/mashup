@@ -16,6 +16,10 @@ class BaseValue {
      * Class constructor.
      */
     BaseValue(int size);
+    /**
+     * String representation for the contained value.
+     * @return Print ready string.
+     */
     virtual std::string ToString() = 0; //TODO: substitute for operator<<
 
   public:
