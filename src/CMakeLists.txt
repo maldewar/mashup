@@ -25,6 +25,19 @@ SET_TARGET_PROPERTIES(${mashscript_parser_BIN} PROPERTIES VERSION "${APPLICATION
 
 INSTALL(TARGETS ${mashscript_parser_BIN} DESTINATION bin)
 
+######################
+#  MASHUP PIPELINER  #
+######################
+FILE (GLOB_RECURSE mashup_pipeliner_SRCS mashup-pipeliner.cc *.cpp *.cxx */*.cc *.C *.c *.h *.hpp)
+SET (mashup_pipeliner_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES} ${GLIB_LIBRARIES} ${GSTREAMER_LIBRARIES})
+SET (mashup_pipeliner_BIN "mashup-pipeliner")
+ADD_EXECUTABLE(${mashup_pipeliner_BIN} ${mashup_pipeliner_SRCS})
+
+TARGET_LINK_LIBRARIES(${mashup_pipeliner_BIN} ${project_LIBS})
+SET_TARGET_PROPERTIES(${mashup_pipeliner_BIN} PROPERTIES VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}" OUTPUT_NAME ${mashup_pipeliner_BIN} CLEAN_DIRECT_OUTPUT 1)
+
+INSTALL(TARGETS ${mashup_pipeliner_BIN} DESTINATION bin)
+
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
