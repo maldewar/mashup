@@ -29,7 +29,8 @@ INSTALL(TARGETS ${mashscript_parser_BIN} DESTINATION bin)
 #  MASHUP PIPELINER  #
 ######################
 FILE (GLOB_RECURSE mashup_pipeliner_SRCS mashup-pipeliner.cc *.cpp *.cxx */*.cc *.C *.c *.h *.hpp)
-SET (mashup_pipeliner_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES} ${GLIB_LIBRARIES} ${GSTREAMER_LIBRARIES})
+MESSAGE(ALERT "GOBJECT LIBRARIES: ${GLIB_GOBJECT_LIBRARIES}")
+SET (mashup_pipeliner_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES} ${Glib_LIBRARIES} ${Glib_GOBJECT_LIBRARIES} ${GSTREAMER_LIBRARIES})
 SET (mashup_pipeliner_BIN "mashup-pipeliner")
 ADD_EXECUTABLE(${mashup_pipeliner_BIN} ${mashup_pipeliner_SRCS})
 
