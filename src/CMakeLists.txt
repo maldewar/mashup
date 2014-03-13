@@ -20,7 +20,7 @@ SET (mashscript_parser_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES})
 SET (mashscript_parser_BIN "mashscript-parser")
 ADD_EXECUTABLE(${mashscript_parser_BIN} ${mashscript_parser_SRCS})
 
-TARGET_LINK_LIBRARIES(${mashscript_parser_BIN} ${project_LIBS})
+TARGET_LINK_LIBRARIES(${mashscript_parser_BIN} ${mashscript_parser_LIBS})
 SET_TARGET_PROPERTIES(${mashscript_parser_BIN} PROPERTIES VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}" OUTPUT_NAME ${mashscript_parser_BIN} CLEAN_DIRECT_OUTPUT 1)
 
 INSTALL(TARGETS ${mashscript_parser_BIN} DESTINATION bin)
@@ -33,7 +33,7 @@ SET (mashup_pipeliner_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES} ${GLIB_LIBRAR
 SET (mashup_pipeliner_BIN "mashup-pipeliner")
 ADD_EXECUTABLE(${mashup_pipeliner_BIN} ${mashup_pipeliner_SRCS})
 
-TARGET_LINK_LIBRARIES(${mashup_pipeliner_BIN} ${project_LIBS})
+TARGET_LINK_LIBRARIES(${mashup_pipeliner_BIN} ${mashup_pipeliner_LIBS})
 SET_TARGET_PROPERTIES(${mashup_pipeliner_BIN} PROPERTIES VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}" OUTPUT_NAME ${mashup_pipeliner_BIN} CLEAN_DIRECT_OUTPUT 1)
 
 INSTALL(TARGETS ${mashup_pipeliner_BIN} DESTINATION bin)
