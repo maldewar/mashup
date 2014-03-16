@@ -90,6 +90,12 @@ class MashscriptParser {
      * @return Status or error code for the parsing.
      */
     int ParseMashup(boost::property_tree::ptree& p_tree, Mashup& mashup);
+
+  public:
+    /**
+     * Base path to compose the absolute location of files.
+     */
+    std::string assets_path;
 };
 
 #endif // MASHUP_COMMON_PARSER_MASHSCRIPTPARSER_

@@ -3,10 +3,12 @@
 #include "../../util/Log.h"
 #include "../BaseProperty.h"
 #include "ValueBuilder.h"
+#include "PathBuilder.h"
 
 namespace pt = boost::property_tree;
 
 MashupBuilder::MashupBuilder() {
+  assets_path = "";
 };
 
 int MashupBuilder::Build(Mashup& mashup,
@@ -134,10 +136,13 @@ int MashupBuilder::BuildAssetDescriptor(AssetDescriptor& asset_desc,
 int MashupBuilder::BuildAssetQualityDescriptor(AssetQualityDescriptor& asset_quality_desc,
     const boost::property_tree::ptree& p_tree) {
   asset_quality_desc.path           = p_tree.get<std::string>("path", "");
+  asset_quality_desc.composed_path  = PathBuilder::GetAbsolute(asset_quality_desc.path,
+                                        assets_path);
   asset_quality_desc.bitrate        = p_tree.get<int>("bitrate", 0);
   asset_quality_desc.natural_width  = p_tree.get<int>("naturalWidth", 0);
   asset_quality_desc.natural_height = p_tree.get<int>("naturalHeight", 0);
-  LOG_TRACE("  AQDesc path: "<< asset_quality_desc.path, LOGGER_BUILDER);
+  LOG_TRACE("  AQDesc path: " << asset_quality_desc.path, LOGGER_BUILDER);
+  LOG_TRACE("  AQDesc comp. path: " << asset_quality_desc.composed_path, LOGGER_BUILDER);
   LOG_TRACE("  AQDesc bitrate: "<< asset_quality_desc.bitrate, LOGGER_BUILDER);
   LOG_TRACE("  AQDesc natural width: "<< asset_quality_desc.natural_width, LOGGER_BUILDER);
   LOG_TRACE("  AQDesc natural height: "<< asset_quality_desc.natural_height, LOGGER_BUILDER);
@@ -172,6 +177,7 @@ int MashupBuilder::BuildActor(Actor& actor, const boost::property_tree::ptree& p
   actor.height    = p_tree.get<double>("height", 0);
   actor.rotation  = p_tree.get<double>("rotation", 0);
   actor.enters_at = p_tree.get<int>("entersAt", 0);
+  actor.offset    = p_tree.get<int>("offset", 0);
   actor.exits_at  = p_tree.get<int>("exitsAt", 0);
   LOG_TRACE(" Actor asset ID: " << actor.asset_id, LOGGER_BUILDER);
   LOG_TRACE(" Actor instance ID: " << actor.instance_id, LOGGER_BUILDER);
@@ -182,6 +188,7 @@ int MashupBuilder::BuildActor(Actor& actor, const boost::property_tree::ptree& p
   LOG_TRACE(" Actor height: " << actor.height, LOGGER_BUILDER);
   LOG_TRACE(" Actor rotation: " << actor.rotation, LOGGER_BUILDER);
   LOG_TRACE(" Actor enters at: " << actor.enters_at, LOGGER_BUILDER);
+  LOG_TRACE(" Actor offset: " << actor.offset, LOGGER_BUILDER);
   LOG_TRACE(" Actor exists_at: " << actor.exits_at, LOGGER_BUILDER);
   return BUILDER_STATUS_OK;
 };
@@ -245,5 +252,7 @@ int MashupBuilder::BuildTransition(Transition& transition,
   LOG_TRACE(" Transition target: " << transition.target, LOGGER_BUILDER);
   LOG_TRACE(" Transition starts at: " << transition.starts_at, LOGGER_BUILDER);
   LOG_TRACE(" Transition duration: " << transition.duration, LOGGER_BUILDER);
+  LOG_TRACE(" Transition start value: " << transition.start_value->ToString(), LOGGER_BUILDER);
+  LOG_TRACE(" Transition end value: " << transition.end_value->ToString(), LOGGER_BUILDER)
   return BUILDER_STATUS_OK;
 };

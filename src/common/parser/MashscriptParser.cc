@@ -9,6 +9,7 @@
 namespace pt = boost::property_tree;
 
 MashscriptParser::MashscriptParser() {
+  assets_path = "";
 };
 
 int MashscriptParser::FromFile(const std::string file, Mashup& mashup) {
@@ -30,6 +31,7 @@ int MashscriptParser::FromStream(const std::string stream, Mashup& mashup) {
 int MashscriptParser::ParseMashup(boost::property_tree::ptree& p_tree, Mashup& mashup) {
   int result;
   MashupBuilder* builder = new MashupBuilder();
+  builder->assets_path = assets_path;
   result = builder->Build(mashup, p_tree);
   if (result < BUILDER_STATUS_OK)
     result = PARSER_ERROR_BAD_FORMAT;

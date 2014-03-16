@@ -114,6 +114,12 @@ class MashupBuilder {
      */
     int BuildTransition(Transition& transition,
                         const boost::property_tree::ptree& p_tree);
+
+    public:
+      /**
+       * Base path to compose the absolute location of files.
+       */
+      std::string assets_path;
 };
 
 #endif // MASHUP_COMMON_BUILDER_MASHUPBUILDER_

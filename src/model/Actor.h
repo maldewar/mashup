@@ -60,6 +60,10 @@ class Actor {
      */
     int enters_at;
     /**
+     * Time in millisecond to cut off from the begining of the media.
+     */
+    int offset;
+    /**
      * Time in milliseconds for the element to leave the scene, relative
      * to the total length of the mashup.
      */

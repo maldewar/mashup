@@ -16,6 +16,7 @@ int main(int argc, char *argv[]) {
     std::string inputFile;
     std::string outputFile;
     std::string outputFormat;
+    std::string assets_path;
     po::options_description genericOpts("Generic options");
     genericOpts.add_options()
       ("help,h", "produce help message.")
@@ -24,6 +25,8 @@ int main(int argc, char *argv[]) {
     ;
     po::options_description configShownOpts("Configuration");
     configShownOpts.add_options()
+      ("assets-path,p", po::value<std::string>(&assets_path)->default_value(""),
+        "path to prepend to the assets path description.")
       ("output-file,o", po::value<std::string>(&outputFile)->default_value(""),
         "path to output smashscript file.")
       ("output-format,f", po::value<std::string>(&outputFormat)->default_value("json"),
@@ -73,6 +76,7 @@ int main(int argc, char *argv[]) {
     }
     Mashup* mashup = new Mashup();
     MashscriptJsonParser* jsonParser = new MashscriptJsonParser();
+    jsonParser->assets_path = assets_path;
     jsonParser->FromFile(inputFile, *mashup);
     std::cout << MashupInspector::Print(*mashup);
   } catch(std::exception& e) {

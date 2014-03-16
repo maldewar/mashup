@@ -27,6 +27,10 @@ class AssetQualityDescriptor {
      */
     std::string path;
     /**
+     * Path composed after validation of the base path.
+     */
+    std::string composed_path;
+    /**
      * Bitrate in kb/s.
      */
     int bitrate;

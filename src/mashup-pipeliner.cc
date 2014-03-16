@@ -14,9 +14,8 @@ namespace po = boost::program_options;
 
 int main(int argc, char *argv[]) {
   try {
-    std::string inputFile;
-    std::string outputFile;
-    std::string outputFormat;
+    std::string input_file;
+    std::string assets_path;
     po::options_description genericOpts("Generic options");
     genericOpts.add_options()
       ("help,h", "produce help message.")
@@ -25,14 +24,12 @@ int main(int argc, char *argv[]) {
     ;
     po::options_description configShownOpts("Configuration");
     configShownOpts.add_options()
-      ("output-file,o", po::value<std::string>(&outputFile)->default_value(""),
-        "path to output smashscript file.")
-      ("output-format,f", po::value<std::string>(&outputFormat)->default_value("json"),
-        "print to the selected format. Allowed values are: \"json\" \"xml\"");
+      ("assets-path,p", po::value<std::string>(&assets_path)->default_value(""),
+        "path to prepend to the assets path description.");
     ;
     po::options_description configHiddenOpts("Hidden options");
     configHiddenOpts.add_options()
-      ("input-file,i", po::value<std::string>(&inputFile),
+      ("input-file,i", po::value<std::string>(&input_file),
         "path to smashscript input file.")
     ;
     // Commandline options.
@@ -74,7 +71,7 @@ int main(int argc, char *argv[]) {
     }
     Mashup* mashup = new Mashup();
     MashscriptJsonParser* jsonParser = new MashscriptJsonParser();
-    jsonParser->FromFile(inputFile, *mashup);
+    jsonParser->FromFile(input_file, *mashup);
     std::cout << MashupInspector::Print(*mashup);
   } catch(std::exception& e) {
     std::cerr << "error: " << e.what() << "\n";
@@ -83,5 +80,144 @@ int main(int argc, char *argv[]) {
     std::cerr << "Exception of unknown type!\n";
   }
 
+/*
+  // CREATING A PIPELINE AND LINKING ELEMENTS WITHIN.
+  GstElement *pipeline;
+  GstElement *source, *filter, *sink;
+
+  // init
+  gst_init (&argc, &argv);
+
+  // create pipeline
+  pipeline = gst_pipeline_new ("my-pipeline");
+
+  // create elements
+  source = gst_element_factory_make ("fakesrc", "source");
+  filter = gst_element_factory_make ("identity", "filter");
+  sink = gst_element_factory_make ("fakesink", "sink");
+
+  // must add elements to pipeline before linking them
+  gst_bin_add_many (GST_BIN (pipeline), source, filter, sink, NULL);
+
+  // link
+  if (!gst_element_link_many (source, filter, sink, NULL)) {
+    g_warning ("Failed to link elements!");
+  }
+*/
+
+
+/*
+  // DISPLAY INFORMATION FROM ELEMENTS
+  GstElementFactory *factory;
+
+  // init GStreamer
+  gst_init (&argc, &argv);
+
+  // get factory
+  factory = gst_element_factory_find ("fakesrc");
+  if (!factory) {
+    g_print ("You don't have the 'fakesrc' element installed!\n");
+    return -1;
+  }
+
+  // display information
+  g_print ("The '%s' element is a member of the category %s.\n"
+           "Description: %s\n",
+           gst_plugin_feature_get_name (GST_PLUGIN_FEATURE (factory)),
+           gst_element_factory_get_metadata (factory, GST_ELEMENT_METADATA_KLASS),
+           gst_element_factory_get_metadata (factory, GST_ELEMENT_METADATA_DESCRIPTION));
+
   return 0;
+*/
+
+
+/*
+  // GET NAME OF ELEMENT
+  GstElement *element;
+  gchar *name;
+
+  // init GStreamer
+  gst_init (&argc, &argv);
+
+  // create element
+  element = gst_element_factory_make ("fakesrc", "source");
+
+  // get name
+  g_object_get (G_OBJECT (element), "name", &name, NULL);
+  g_print ("The name of the element is '%s'.\n", name);
+  g_free (name);
+
+  gst_object_unref (GST_OBJECT (element));
+
+  return 0;
+*/
+
+
+/*
+  // GET ELEMENT FROM FACTORY
+  GstElementFactory *factory;
+  GstElement * element;
+
+  // init GStreamer
+  gst_init (&argc, &argv);
+
+  // create element, method #2
+  factory = gst_element_factory_find ("fakesrc");
+  if (!factory) {
+    g_print ("Failed to find factory of type 'fakesrc'\n");
+    return -1;
+  }
+  element = gst_element_factory_create (factory, "source");
+  if (!element) {
+    g_print ("Failed to create element, even though its factory exists!\n");
+    return -1;
+  }
+
+  gst_object_unref (GST_OBJECT (element));
+
+  return 0;
+*/
+
+
+/*
+  //GET ELEMENT 'WITHOUT' FACTORY
+  GstElement *element;
+
+  // init GStreamer
+  gst_init (&argc, &argv);
+
+  // create element
+  element = gst_element_factory_make ("fakesrc", "source");
+  if (!element) {
+    g_print ("Failed to create element of type 'fakesrc'\n");
+    return -1;
+  }
+
+  gst_object_unref (GST_OBJECT (element));
+
+  return 0;
+*/
+
+
+/*
+  // INITIALIZE GSTREAMER
+  const gchar *nano_str;
+  guint major, minor, micro, nano;
+
+  gst_init (&argc, &argv);
+
+  gst_version (&major, &minor, &micro, &nano);
+
+  if (nano == 1)
+    nano_str = "(CVS)";
+  else if (nano == 2)
+    nano_str = "(Prerelease)";
+  else
+    nano_str = "";
+
+  printf ("This program is linked against GStreamer %d.%d.%d %s\n",
+          major, minor, micro, nano_str);
+  return 0;
+*/
+  
 }

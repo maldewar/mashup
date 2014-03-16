@@ -51,6 +51,7 @@ void MashupInspector::Print(const AssetDescriptor& asset_desc,
 void MashupInspector::Print(const AssetQualityDescriptor& asset_quality_desc,
                             std::stringstream& out, int indent) {
   Print::Duple("Path", asset_quality_desc.path, out, indent);
+  Print::Duple("Full Path", asset_quality_desc.composed_path, out, indent);
   Print::Duple("Bitrate", asset_quality_desc.bitrate, out, indent);
   Print::Duple("Width", asset_quality_desc.natural_width, out, indent);
   Print::Duple("Height", asset_quality_desc.natural_height, out, indent);

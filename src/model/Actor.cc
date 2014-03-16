@@ -9,5 +9,6 @@ Actor::Actor() {
   width = 0;
   height = 0;
   enters_at = 0;
+  offset = 0;
   exits_at = 0;
 };
