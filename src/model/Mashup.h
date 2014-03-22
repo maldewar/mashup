@@ -2,7 +2,7 @@
 #define MASHUP_MODEL_MASHUP_
 
 #include <string>
-#include <vector>
+#include <unordered_map>
 
 #include "AssetDescriptor.h"
 #include "Scene.h"
@@ -42,7 +42,7 @@ class Mashup {
     /**
      * Descriptors for the assets participating on this mashup.
      */
-    std::vector<AssetDescriptor*> assets;
+    std::unordered_map<long int, AssetDescriptor*> assets;
     /**
      * Scene instructions for this mashup.
      */
