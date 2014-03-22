@@ -66,12 +66,6 @@ class MashupBuilder {
      * @return Status or error code on the building of Transition objects.
      */
     int AppendTransitions(Scene& scene, const boost::property_tree::ptree& p_tree);
-    /**
-     * Gets the asset type enum value given a string value.
-     * @param type String value for type.
-     * @return Asset Type enum value.
-     */
-    AssetDescriptor::Type GetAssetType(const std::string type);
 
   private:
     /**

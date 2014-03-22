@@ -1,6 +1,10 @@
 #ifndef MASHUP_MODEL_ACTOR_
 #define MASHUP_MODEL_ACTOR_
 
+#include <string>
+
+#include "AssetDescriptor.h"
+
 /**
  * @brief Contains initialization values for assets entering a scene.
  *
@@ -18,9 +22,17 @@ class Actor {
 
   public:
     /**
+     * Unique identifier for this instance.
+     */
+    std::string id;
+    /**
      * ID for the assets representing this actor.
      */
     long int asset_id;
+    /**
+     * Type of asset.
+     */
+    AssetDescriptor::Type type;
     /**
      * Unique id relative to the mashup in case there are several
      * actors representing the same asset.

@@ -1,6 +1,9 @@
 #ifndef MASHUP_MODEL_TRANSITION_
 #define MASHUP_MODEL_TRANSITION_
 
+#include <string>
+
+#include "AssetDescriptor.h"
 #include "../common/BaseValue.h"
 #include "../common/BaseProperty.h"
 
@@ -27,9 +30,17 @@ class Transition {
       Linear
     };
     /**
+     * Unique identifier for this instance.
+     */
+    std::string id;
+    /**
      * Asset ID.
      */
     long int asset_id;
+    /**
+     * Type of asset.
+     */
+    AssetDescriptor::Type type;
     /**
      * Instance ID for an asset in case it has more than one
      * actor representing it.

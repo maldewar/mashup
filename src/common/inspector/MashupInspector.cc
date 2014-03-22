@@ -23,7 +23,7 @@ void MashupInspector::Print(const Mashup& mashup, std::stringstream& out, int in
   } else {
     Print::Duple("Assets", mashup.assets.size(), out, indent);
     for(const auto& asset_desc : mashup.assets) {
-      Print(*asset_desc, out, indent + 2);
+      Print(*(asset_desc.second), out, indent + 2);
     }
   }
   Print::Simple("Scene", out, indent);
@@ -34,7 +34,7 @@ void MashupInspector::Print(const Mashup& mashup, std::stringstream& out, int in
 void MashupInspector::Print(const AssetDescriptor& asset_desc,
                             std::stringstream& out, int indent) {
   Print::Duple("ID", asset_desc.id, out, indent);
-  Print::Duple("Type", asset_desc.type, out, indent);
+  Print::Duple("Type", AssetDescriptor::Get(asset_desc.type), out, indent);
   Print::Duple("Length", asset_desc.length, out, indent);
   if (asset_desc.qualities.size() == 0) {
     Print::Duple("Qualities", "<empty>", out, indent);
@@ -51,7 +51,10 @@ void MashupInspector::Print(const AssetDescriptor& asset_desc,
 void MashupInspector::Print(const AssetQualityDescriptor& asset_quality_desc,
                             std::stringstream& out, int indent) {
   Print::Duple("Path", asset_quality_desc.path, out, indent);
-  Print::Duple("Full Path", asset_quality_desc.composed_path, out, indent);
+  if (asset_quality_desc.composed_path.compare("") == 0)
+    Print::Duple("Full Path", "<empty>", out, indent);
+  else
+    Print::Duple("Full Path", asset_quality_desc.composed_path, out, indent);
   Print::Duple("Bitrate", asset_quality_desc.bitrate, out, indent);
   Print::Duple("Width", asset_quality_desc.natural_width, out, indent);
   Print::Duple("Height", asset_quality_desc.natural_height, out, indent);
@@ -89,7 +92,9 @@ void MashupInspector::Print(const Actor& actor,
                             std::stringstream& out, int indent) {
   Print::Duple("Asset ID", actor.asset_id, out, indent);
   Print::Duple("Asset Inst", actor.instance_id, out, indent);
+  Print::Duple("Type", AssetDescriptor::Get(actor.type), out, indent);
   Print::Duple("Enters At", actor.enters_at, out, indent);
+  Print::Duple("Offset", actor.offset, out, indent);
   Print::Duple("Exists At", actor.exits_at, out, indent);
   Print::Duple("X", actor.x, out, indent);
   Print::Duple("Y", actor.y, out, indent);
@@ -103,6 +108,7 @@ void MashupInspector::Print(const Transition& transition,
                             std::stringstream& out, int indent) {
   Print::Duple("Asset ID", transition.asset_id, out, indent);
   Print::Duple("Asset Inst", transition.instance_id, out, indent);
+  Print::Duple("Type", AssetDescriptor::Get(transition.type), out, indent);
   Print::Duple("Target", BaseProperty::Get(transition.target), out, indent);
   Print::Duple("Starts at", transition.starts_at, out, indent);
   Print::Duple("Duration", transition.duration, out, indent);

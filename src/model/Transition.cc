@@ -3,6 +3,7 @@
 Transition::Transition() {
   asset_id = 0;
   instance_id = 0;
+  type = AssetDescriptor::Type::Undef;;
   target = BaseProperty::Target::Undef;
   start_value = nullptr;
   end_value = nullptr;

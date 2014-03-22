@@ -1,5 +1,7 @@
 #include "MashupBuilder.h"
 
+#include <utility>
+
 #include "../../util/Log.h"
 #include "../BaseProperty.h"
 #include "ValueBuilder.h"
@@ -53,7 +55,7 @@ int MashupBuilder::AppendAssetDescriptors(Mashup& mashup,
     AssetDescriptor* asset_desc = new AssetDescriptor();
     result = BuildAssetDescriptor(*asset_desc, p_desc);
     if (result == BUILDER_STATUS_OK)
-      mashup.assets.push_back(asset_desc);
+      mashup.assets.insert(std::make_pair(asset_desc->id, asset_desc));
     else
       delete asset_desc;
   }
@@ -92,20 +94,10 @@ int MashupBuilder::AppendTransitions(Scene& scene,
   return BUILDER_STATUS_OK;
 };
 
-AssetDescriptor::Type MashupBuilder::GetAssetType(const std::string type) {
-  if (type.compare("video") == 0)
-    return AssetDescriptor::Type::Video;
-  if (type.compare("audio") == 0)
-    return AssetDescriptor::Type::Audio;
-  if (type.compare("image") == 0)
-    return AssetDescriptor::Type::Image;
-  return AssetDescriptor::Type::Undef;
-};
-
 int MashupBuilder::BuildAssetDescriptor(AssetDescriptor& asset_desc,
                                const boost::property_tree::ptree& p_tree) {
   asset_desc.id     = p_tree.get<long int>("id", 0);
-  asset_desc.type   = GetAssetType(p_tree.get<std::string>("type",""));
+  asset_desc.type   = AssetDescriptor::Get(p_tree.get<std::string>("type",""));
   asset_desc.length = p_tree.get<int>("length", 0);
   //TODO: parser for length being an int or a string.
   LOG_TRACE(" ADesc ID: " << asset_desc.id, LOGGER_BUILDER);
@@ -170,15 +162,16 @@ int MashupBuilder::BuildScene(Scene& scene, const boost::property_tree::ptree& p
 int MashupBuilder::BuildActor(Actor& actor, const boost::property_tree::ptree& p_tree) {
   actor.asset_id    = p_tree.get<long int>("assetId", 0);
   actor.instance_id = p_tree.get<int>("instanceId", 0);
-  actor.x         = p_tree.get<double>("x", 0);
-  actor.y         = p_tree.get<double>("y", 0);
-  actor.z         = p_tree.get<int>("z", 0);
-  actor.width     = p_tree.get<double>("width", 0);
-  actor.height    = p_tree.get<double>("height", 0);
-  actor.rotation  = p_tree.get<double>("rotation", 0);
-  actor.enters_at = p_tree.get<int>("entersAt", 0);
-  actor.offset    = p_tree.get<int>("offset", 0);
-  actor.exits_at  = p_tree.get<int>("exitsAt", 0);
+  actor.type        = AssetDescriptor::Get(p_tree.get<std::string>("type",""));
+  actor.x           = p_tree.get<double>("x", 0);
+  actor.y           = p_tree.get<double>("y", 0);
+  actor.z           = p_tree.get<int>("z", 0);
+  actor.width       = p_tree.get<double>("width", 0);
+  actor.height      = p_tree.get<double>("height", 0);
+  actor.rotation    = p_tree.get<double>("rotation", 0);
+  actor.enters_at   = p_tree.get<int>("entersAt", 0);
+  actor.offset      = p_tree.get<int>("offset", 0);
+  actor.exits_at    = p_tree.get<int>("exitsAt", 0);
   LOG_TRACE(" Actor asset ID: " << actor.asset_id, LOGGER_BUILDER);
   LOG_TRACE(" Actor instance ID: " << actor.instance_id, LOGGER_BUILDER);
   LOG_TRACE(" Actor x: " << actor.x, LOGGER_BUILDER);
@@ -197,6 +190,7 @@ int MashupBuilder::BuildTransition(Transition& transition,
                       const boost::property_tree::ptree& p_tree) {
   transition.asset_id    = p_tree.get<long int>("assetId", 0);
   transition.instance_id = p_tree.get<int>("instanceId", 0);
+  transition.type        = AssetDescriptor::Get(p_tree.get<std::string>("type",""));
   transition.target = BaseProperty::Get(p_tree.get<std::string>("target",""));
   if (transition.target == BaseProperty::Target::Undef) {
     LOG_WARN("Transition for asset " << transition.asset_id << ":"
