@@ -17,6 +17,11 @@ const std::string LOGGER_PARSER  = "common.parser";
 const std::string LOGGER_BUILDER = "common.builder";
 
 /**
+ * 
+ */
+const std::string LOGGER_PIPELINE = "pipeline";
+
+/**
  * Macro for logging trace messages.
  */
 #define LOG_TRACE(msg, logger_name) { \

@@ -26,10 +26,19 @@ class Pipeline {
      * Class constructor.
      */
     Pipeline();
-    int Play();
-    static void OnDecodeDynamicPad(GstElement* decodebin,
-                                   GstPad*     pad,
-                                   gpointer*   data);
+    /**
+     * Prepares the pipeline, connecting actors and setting
+     * initial values.
+     */
+    void Prepare();
+    /**
+     * Start playing the pipeline.
+     */
+    void Play();
+    /**
+     * Sets the resolution for the video in pixels.
+     */
+    void SetResolution( const int width, const int height);
 
   public:
     std::string id;
@@ -46,11 +55,13 @@ class Pipeline {
      */
     GstElement* audiomixer;
     /**
+     * Video output filter to set resolution.
+     */
+    GstElement* filter;
+    /**
      * Keeps track of all the VideosActor instances involved in the pipeline.
      */
     boost::unordered_map<std::pair<long int, int>, VideoActor*> m_video_actors;
-    //boost::unordered_map<std::pair<long int, int>, GstElement*> m_audio_actors;
-    //boost::unordered_map<std::pair<long int, int>, GstElement*> m_image_actors;
 };
 
-#endif // MASHUP_MODEL_MASHUP_
+#endif // MASHUP_PIPELINE_PIPELINE_

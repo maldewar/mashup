@@ -7,6 +7,10 @@ PipelineBuilder::PipelineBuilder() {};
 
 Pipeline* PipelineBuilder::Build(const Mashup& mashup) {
   Pipeline* pipeline = new Pipeline();
+  if (mashup.scene != nullptr) {
+    pipeline->SetResolution(mashup.scene->width, mashup.scene->height);
+    BuildActors(mashup, *pipeline);
+  }
   return pipeline;
 };
 
@@ -15,11 +19,11 @@ int PipelineBuilder::BuildActors(const Mashup& mashup, Pipeline& pipeline) {
     std::stringstream ss;
     for(const auto& actor : mashup.scene->actors) {
       if (mashup.assets.count(actor->asset_id) > 0) {
-        ss << actor->asset_id << "_" << actor->instance_id;
-        actor->id = ss.str();
         AssetDescriptor* asset_descriptor = mashup.assets.at(actor->asset_id);
-        AssetQualityDescriptor* asset_quality_descriptor = asset_descriptor->qualities[0];
         if (asset_descriptor->type == AssetDescriptor::Type::Video) {
+          AssetQualityDescriptor* asset_quality_descriptor = asset_descriptor->qualities[0];
+          ss << "v_" << actor->asset_id << "_" << actor->instance_id;
+          actor->id = ss.str();
           VideoActor* video_actor = new VideoActor(actor,
                                                    asset_descriptor,
                                                    asset_quality_descriptor);

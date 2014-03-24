@@ -10,11 +10,15 @@ namespace po = boost::program_options;
 #include "model/Mashup.h"
 #include "common/parser/MashscriptJsonParser.h"
 #include "common/inspector/MashupInspector.h"
+#include "pipeline/Pipeline.h"
+#include "common/builder/PipelineBuilder.h"
 #include "util/Log.h"
 
 int main(int argc, char *argv[]) {
   try {
-    std::string input_file;
+    std::string inputFile;
+    std::string outputFile;
+    std::string outputFormat;
     std::string assets_path;
     po::options_description genericOpts("Generic options");
     genericOpts.add_options()
@@ -25,11 +29,15 @@ int main(int argc, char *argv[]) {
     po::options_description configShownOpts("Configuration");
     configShownOpts.add_options()
       ("assets-path,p", po::value<std::string>(&assets_path)->default_value(""),
-        "path to prepend to the assets path description.");
+        "path to prepend to the assets path description.")
+      ("output-file,o", po::value<std::string>(&outputFile)->default_value(""),
+        "path to output smashscript file.")
+      ("output-format,f", po::value<std::string>(&outputFormat)->default_value("json"),
+        "print to the selected format. Allowed values are: \"json\" \"xml\"");
     ;
     po::options_description configHiddenOpts("Hidden options");
     configHiddenOpts.add_options()
-      ("input-file,i", po::value<std::string>(&input_file),
+      ("input-file,i", po::value<std::string>(&inputFile),
         "path to smashscript input file.")
     ;
     // Commandline options.
@@ -40,9 +48,9 @@ int main(int argc, char *argv[]) {
     printOpts.add(genericOpts).add(configShownOpts);
     po::positional_options_description p;
     p.add("input-file", -1);
-    po::variables_map vm;        
+    po::variables_map vm;
     po::store(po::command_line_parser(argc, argv).options(cmdlineOpts).positional(p).run(), vm);
-    po::notify(vm);    
+    po::notify(vm);
 
     if (vm.count("help")) {
       boost::filesystem::path p = argv[0];
@@ -71,8 +79,12 @@ int main(int argc, char *argv[]) {
     }
     Mashup* mashup = new Mashup();
     MashscriptJsonParser* jsonParser = new MashscriptJsonParser();
-    jsonParser->FromFile(input_file, *mashup);
+    jsonParser->assets_path = assets_path;
+    jsonParser->FromFile(inputFile, *mashup);
     std::cout << MashupInspector::Print(*mashup);
+    gst_init (&argc, &argv);
+    Pipeline* pipeline = PipelineBuilder::Build(*mashup);
+    pipeline->Play();
   } catch(std::exception& e) {
     std::cerr << "error: " << e.what() << "\n";
     return 1;

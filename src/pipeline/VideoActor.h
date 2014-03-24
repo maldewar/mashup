@@ -1,6 +1,9 @@
 #ifndef MASHUP_PIPELINE_VIDEOACTOR_
 #define MASHUP_PIPELINE_VIDEOACTOR_
 
+#include <string>
+#include <sstream>
+
 #include <gst/gst.h>
 
 #include "../model/Actor.h"
@@ -23,11 +26,25 @@ class VideoActor {
     VideoActor(Actor* actor,
                AssetDescriptor* asset_descriptor,
                AssetQualityDescriptor* asset_quality_descriptor);
-    static void OnDecodeBinPadAdded(GstElement* decodebin,
+    static void OnDecodebinPadAdded(GstElement* decodebin,
                                     GstPad*     pad,
-                                    gpointer*   data);
+                                    VideoActor*   video_actor);
+  private:
+    std::string GetGstElementId(std::string base);
 
   public:
+    /**
+     * Mashup Actor instance.
+     */
+    Actor* actor;
+    /**
+     * Mashupt AssetDescriptor instance.
+     */
+    AssetDescriptor* asset_descriptor;
+    /**
+     * Mashup AssetQualityDescriptor instance.
+     */
+    AssetQualityDescriptor* asset_quality_descriptor;
     /**
      * Bin to contain all the elements created for this actor.
      */
@@ -61,6 +78,25 @@ class VideoActor {
      * Modifies the volume of the audio channel.
      */
     GstElement* volume;
+    /**
+     * Pad to be used as video output for the bin.
+     */
+    GstPad* video_src_pad;
+    /**
+     * Pad to be user as audio output for the bin.
+     */
+    GstPad* audio_src_pad;
+    /**
+     * Pad to the mixing element for video this bin is linked to.
+     */
+    GstPad* videomixer_pad;
+    /**
+     * Pad to the mixing element for audio this bin is linked to.
+     */
+    GstPad* audiomixer_pad;
+
+  private:
+    std::stringstream ss;
 };
 
 #endif // MASHUP_PIPELINE_VIDEOACTOR_
