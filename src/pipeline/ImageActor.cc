@@ -27,6 +27,13 @@ ImageActor::ImageActor(Actor* actor,
                                             GetGstElementId(GST_ELEM_IMAGEFREEZE).c_str());
     videoscale   = gst_element_factory_make(GST_ELEM_VIDEOSCALE.c_str(),
                                             GetGstElementId(GST_ELEM_VIDEOSCALE).c_str());
+    if (actor->resize_mode == Actor::ResizeMode::AspectBorderTransparent ||
+        actor->resize_mode == Actor::ResizeMode::AspectNone) {
+      g_object_set(G_OBJECT(videoscale),
+                   "add-borders",
+                   false,
+                   NULL);
+    }
     filter       = gst_element_factory_make(GST_ELEM_CAPSFILTER.c_str(),
                                             GetGstElementId(GST_ELEM_CAPSFILTER).c_str());
     CheckGstElements({{GST_ELEM_FILESRC, filesrc},
@@ -65,9 +72,34 @@ void ImageActor::SetDimensions(double width, double height) {
   this->width = width;
   this->height = height;
   GstCaps* filter_caps;
+  int scene_width = 640;
+  int scene_height = 480;
+  area_width_px = Math::RelativeToPx(width, scene_width);
+  area_height_px = Math::RelativeToPx(height, scene_height);
+  switch (actor->resize_mode) {
+    case Actor::ResizeMode::AspectBorderTransparent:
+      if (width > height) {
+        height_px = area_height_px;
+        width_px = height_px *
+                   asset_quality_descriptor->natural_width /
+                   asset_quality_descriptor->natural_height;
+      } else {
+        width_px = area_width_px;
+        height_px = width_px *
+                    asset_quality_descriptor->natural_height /
+                    asset_quality_descriptor->natural_width;
+      }
+      break;
+    case Actor::ResizeMode::AspectBorderBlack:
+    case Actor::ResizeMode::AspectNone:
+    case Actor::ResizeMode::AspectCrop:
+      width_px = area_width_px;
+      height_px = area_height_px;
+      break;
+  }
   filter_caps = gst_caps_new_simple ("video/x-raw",
-         GST_PROP_WIDTH.c_str(), G_TYPE_INT, Math::RelativeToPx(width, 640),
-         GST_PROP_HEIGHT.c_str(), G_TYPE_INT, Math::RelativeToPx(height, 480),
+         GST_PROP_WIDTH.c_str(), G_TYPE_INT, width_px,
+         GST_PROP_HEIGHT.c_str(), G_TYPE_INT, height_px,
          NULL);
   g_object_set(G_OBJECT (filter), "caps", filter_caps, NULL);
   gst_caps_unref(filter_caps);
@@ -75,18 +107,32 @@ void ImageActor::SetDimensions(double width, double height) {
 
 void ImageActor::SetX(double x) {
   this->x = x;
-  g_object_set(G_OBJECT(videomixer_pad),
+  if (actor->resize_mode == Actor::ResizeMode::AspectBorderTransparent) {
+    g_object_set(G_OBJECT(videomixer_pad),
+                 "xpos",
+                 Math::RelativeToPx(x, 640) + ((area_width_px - width_px) / 2),
+                 NULL);
+  } else {
+    g_object_set(G_OBJECT(videomixer_pad),
                  "xpos",
                  Math::RelativeToPx(x, 640),
                  NULL);
+  }
 };
 
 void ImageActor::SetY(double y) {
   this->y = y;
-  g_object_set(G_OBJECT(videomixer_pad),
+  if (actor->resize_mode == Actor::ResizeMode::AspectBorderTransparent) {
+    g_object_set(G_OBJECT(videomixer_pad),
+                 "ypos",
+                 Math::RelativeToPx(y, 480) + ((area_height_px - height_px) / 2),
+                 NULL);
+  } else {
+    g_object_set(G_OBJECT(videomixer_pad),
                  "ypos",
                  Math::RelativeToPx(y, 480),
                  NULL);
+  }
 };
 
 void ImageActor::SetZ(int z) {

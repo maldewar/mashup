@@ -57,6 +57,10 @@ class ImageActor : public BaseActor {
   private:
     double height;
     double width;
+    int area_width_px;
+    int area_height_px;
+    int width_px;
+    int height_px;
     double x;
     double y;
     int z;

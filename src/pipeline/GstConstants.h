@@ -11,8 +11,12 @@ const std::string GST_ELEM_VIDEOCONVERT = "videoconvert";
 const std::string GST_ELEM_AUDIOCONVERT = "audioconvert";
 const std::string GST_ELEM_VIDEOSCALE = "videoscale";
 const std::string GST_ELEM_VOLUME = "volume";
+const std::string GST_ELEM_IMAGEFREEZE = "imagefreeze";
+const std::string GST_ELEM_CAPSFILTER = "capsfilter";
 
 const std::string GST_PROP_LOCATION = "location";
+const std::string GST_PROP_WIDTH = "width";
+const std::string GST_PROP_HEIGHT = "height";
 
 const std::string M_GST_PAD_SINK = "sink";
 const std::string M_GST_PAD_SRC = "src";

@@ -101,10 +101,14 @@ void VideoActor::SetDimensions(double width, double height) {
     case Actor::ResizeMode::AspectBorderTransparent:
       if (width > height) {
         height_px = area_height_px;
-        width_px = height_px * asset_quality_descriptor->natural_width / asset_quality_descriptor->natural_height;
+        width_px = height_px *
+                   asset_quality_descriptor->natural_width /
+                   asset_quality_descriptor->natural_height;
       } else {
         width_px = area_width_px;
-        height_px = width_px * asset_quality_descriptor->natural_height / asset_quality_descriptor->natural_width;
+        height_px = width_px *
+                    asset_quality_descriptor->natural_height /
+                    asset_quality_descriptor->natural_width;
       }
       break;
     case Actor::ResizeMode::AspectBorderBlack:
