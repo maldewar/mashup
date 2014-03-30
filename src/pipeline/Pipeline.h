@@ -10,6 +10,7 @@
 
 #include "../model/Mashup.h"
 #include "VideoActor.h"
+#include "ImageActor.h"
 
 /**
  * @brief Abstraction of a pipeline element of GStreamer.
@@ -38,14 +39,29 @@ class Pipeline {
     /**
      * Sets the resolution for the video in pixels.
      */
-    void SetResolution( const int width, const int height);
+    void SetResolution(const int width, const int height);
+    static int BusCall(GstBus* bus,
+                       GstMessage* msg,
+                       void* pipeline_obj);
 
   public:
     std::string id;
     /**
+     * Output resolution width.
+     */
+    int width;
+    /**
+     * Output resolution height.
+     */
+    int height;
+    /**
      * Pipeline GStreamer Element.
      */
     GstElement* pipeline;
+    /**
+     * Main loop for playing this pipeline.
+     */
+    GMainLoop* loop;
     /**
      * Mixer for video inputs.
      */
@@ -54,6 +70,7 @@ class Pipeline {
      * Mixer for audio inputs.
      */
     GstElement* audiomixer;
+    GstElement* videoconvert;
     /**
      * Video output filter to set resolution.
      */
@@ -62,6 +79,10 @@ class Pipeline {
      * Keeps track of all the VideosActor instances involved in the pipeline.
      */
     boost::unordered_map<std::pair<long int, int>, VideoActor*> m_video_actors;
+    /**
+     * Keeps track of all the ImageActor instances involved in the pipeline.
+     */
+    boost::unordered_map<std::pair<long int, int>, ImageActor*> m_image_actors;
 };
 
 #endif // MASHUP_PIPELINE_PIPELINE_

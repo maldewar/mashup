@@ -1,44 +1,38 @@
-#ifndef MASHUP_PIPELINE_VIDEOACTOR_
-#define MASHUP_PIPELINE_VIDEOACTOR_
+#ifndef MASHUP_PIPELINE_IMAGEACTOR_
+#define MASHUP_PIPELINE_IMAGEACTOR_
 
 #include "BaseActor.h"
 
 /**
- * @brief Abstraction of elements required to creater a Scene actor.
+ * @brief Abstraction of elements required to creater an Image actor.
  *
  * The class acts as a container for GStreamer Elements involved in the
- * reading and processing of videos to be mixed in a Pipeline.
+ * reading and processing of images to be mixed in a Pipeline.
  * @author Waldemar Sánchez
  * @date March, 2014
  */
-class VideoActor : public BaseActor {
+class ImageActor : public BaseActor {
   public:
     /**
      * Class constructor.
      */
-    VideoActor(Actor* actor,
+    ImageActor(Actor* actor,
                AssetDescriptor* asset_descriptor,
                AssetQualityDescriptor* asset_quality_descriptor);
-    void SetGstElements();
     void SetDimensions(double width, double height);
     void SetX(double x);
     void SetY(double y);
     void SetZ(int z);
-    void SetAlpha(double alpha);
+    void SetGstElements();
     static void OnDecodebinPadAdded(GstElement* decodebin,
                                     GstPad*     pad,
-                                    VideoActor*   video_actor);
+                                    ImageActor* image_actor);
 
   public:
     /**
      * Reads the data stream from a file.
      */
     GstElement* filesrc;
-    /**
-     * Creates to buffer in memory to contain the data read
-     * from the file.
-     */
-    GstElement* queue;
     /**
      * Decodes the data stream and produces video/audio output.
      */
@@ -48,9 +42,9 @@ class VideoActor : public BaseActor {
      */
     GstElement* videoconvert;
     /**
-     * Converts audio to audio/x-raw format.
+     * Create the frames with the base image.
      */
-    GstElement* audioconvert;
+    GstElement* imagefreeze;
     /**
      * Scale the proportions of the video channel.
      */
@@ -59,23 +53,13 @@ class VideoActor : public BaseActor {
      * Video output filter to set resolution.
      */
     GstElement* filter;
-    /**
-     * Modifies the volume of the audio channel.
-     */
-    GstElement* volume;
-    
 
   private:
     double height;
     double width;
-    int area_height_px;
-    int area_width_px;
-    int height_px;
-    int width_px;
     double x;
     double y;
     int z;
-    double alpha;
 };
 
-#endif // MASHUP_PIPELINE_VIDEOACTOR_
+#endif // MASHUP_PIPELINE_IMAGEACTOR_

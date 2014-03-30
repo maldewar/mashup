@@ -4,10 +4,12 @@
 #include "../util/Log.h"
 
 Pipeline::Pipeline() {
-  pipeline = gst_pipeline_new(id.c_str());
-  videomixer = gst_element_factory_make("videomixer", "videomixer");
-  audiomixer = gst_element_factory_make("adder", "audiomixer");
-  filter     = gst_element_factory_make("capsfilter","filter");
+  pipeline     = gst_pipeline_new(id.c_str());
+  loop         = g_main_loop_new(NULL, false);
+  videomixer   = gst_element_factory_make("videomixer", "videomixer");
+  videoconvert = gst_element_factory_make("videoconvert", "videoconvert");
+  audiomixer   = gst_element_factory_make("adder", "audiomixer");
+  filter       = gst_element_factory_make("capsfilter","filter");
 };
 
 void Pipeline::Prepare() {
@@ -27,38 +29,54 @@ void Pipeline::Prepare() {
     video_actor->videomixer_pad = video_sink_pad;
     video_actor->audiomixer_pad = audio_sink_pad;
     /*
-    g_object_set(G_OBJECT(video_sink_pad),
-                 "xpos", 
-                 100,
-                 NULL);
-    g_object_set(G_OBJECT(video_sink_pad),
-                 "ypos",                   
-                 50,
-                 NULL);
-    g_object_set(G_OBJECT(video_sink_pad),
-                 "alpha",                   
-                 0.7f,
-                 NULL);
+    gint64 queued;
+
+    guint in_width, in_height;
+    gint fps_n;
+    gint fps_d;
+
+    gint xpos, ypos;
+    guint zorder;
+    gint blend_mode;
+    gdouble alpha;
     */
     gst_object_unref(GST_OBJECT(video_src_pad));
     gst_object_unref(GST_OBJECT(audio_src_pad));
-  };
+    video_actor->SetGstElements();
+  }
+  for (const auto& image_actor_pair : m_image_actors) {
+    GstPad* video_src_pad;
+    GstPad* video_sink_pad;
+    ImageActor* image_actor = image_actor_pair.second;
+    gst_bin_add(GST_BIN(pipeline), image_actor->bin);
+    video_src_pad = gst_element_get_static_pad(image_actor->bin, M_GST_PAD_VIDEO_SRC.c_str());
+    video_sink_pad = gst_element_get_request_pad(videomixer, M_GST_PAD_MULTI_SINK.c_str());
+    gst_pad_link(video_src_pad, video_sink_pad);
+    image_actor->videomixer_pad = video_sink_pad;
+    gst_object_unref(GST_OBJECT(video_src_pad));
+    image_actor->SetGstElements();
+  }
 };
 
 void Pipeline::Play() {
-  GMainLoop *loop;
-  loop = g_main_loop_new(NULL, false);
   GstElement *e_videotestsrc;
   GstElement *e_audiotestsrc;
   GstElement *e_autovideosink;
   GstElement *e_autoaudiosink;
+  GstBus* bus;
+  guint bus_watch_id;
   e_autovideosink = gst_element_factory_make("autovideosink", "autovideosink");
   e_autoaudiosink = gst_element_factory_make("autoaudiosink", "autoaudiosink");
-  gst_bin_add_many(GST_BIN(pipeline), videomixer, filter, e_autovideosink, NULL);
+  gst_bin_add_many(GST_BIN(pipeline), videomixer, videoconvert, filter, e_autovideosink, NULL);
   gst_bin_add_many(GST_BIN(pipeline), audiomixer, e_autoaudiosink, NULL);
-  gst_element_link_many(videomixer, filter, e_autovideosink, NULL);
+  gst_element_link_many(videomixer, videoconvert, filter, e_autovideosink, NULL);
   gst_element_link_many(audiomixer, e_autoaudiosink, NULL);
   Prepare();
+
+  bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
+  bus_watch_id = gst_bus_add_watch(bus, Pipeline::BusCall, this);
+  gst_object_unref (bus);
+
   gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PLAYING);
   g_main_loop_run (loop);
   //gst_element_set_state (pipeline, GST_STATE_NULL);
@@ -67,10 +85,48 @@ void Pipeline::Play() {
 
 void Pipeline::SetResolution(const int width, const int height) {
   GstCaps* filter_caps;
+  this->width  = width;
+  this->height = height;
   filter_caps = gst_caps_new_simple ("video/x-raw",
-         "width", G_TYPE_INT, width,
-         "height", G_TYPE_INT, height,
+         GST_PROP_WIDTH.c_str(), G_TYPE_INT, width,
+         GST_PROP_HEIGHT.c_str(), G_TYPE_INT, height,
          NULL);
   g_object_set(G_OBJECT (filter), "caps", filter_caps, NULL);
   gst_caps_unref(filter_caps);
 };
+
+int Pipeline::BusCall(GstBus* bus,
+                      GstMessage* msg,
+                      void* pipeline_obj)
+{
+  switch (GST_MESSAGE_TYPE (msg)) {
+
+    case GST_MESSAGE_EOS:
+      //g_print ("End of stream\n");
+      //g_main_loop_quit (loop);
+      LOG_TRACE("GST_MESSAGE_EOS", LOGGER_PIPELINE);
+      break;
+
+    case GST_MESSAGE_ERROR: {
+      Pipeline* pipeline = static_cast<Pipeline*>(pipeline_obj);
+      gchar  *debug;
+      GError *error;
+
+      gst_message_parse_error (msg, &error, &debug);
+      g_free (debug);
+
+      g_printerr ("Error: %s\n", error->message);
+      g_error_free (error);
+
+      g_main_loop_quit (pipeline->loop);
+      break;
+    }
+    default:
+      break;
+  }
+
+  return TRUE;
+}
+/*
+gst-launch-1.0 -v uridecodebin uri=file:///home/waldemar/Projects/mashup/test/assets/hb/transparent.png ! imagefreeze ! videomixer name=m sink_0::zorder=0 ! videoconvert ! autovideosink videotestsrc ! videoscale ! video/x-raw, width=640, height=400 ! m.
+*/

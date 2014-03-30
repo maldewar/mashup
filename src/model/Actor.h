@@ -5,6 +5,14 @@
 
 #include "AssetDescriptor.h"
 
+const std::string RESIZE_ASPECT_BORDER_BLACK = "black";
+
+const std::string RESIZE_ASPECT_BORDER_TRANSPARENT = "transparent";
+
+const std::string RESIZE_ASPECT_NONE = "none";
+
+const std::string RESIZE_ASPECT_CROP = "crop";
+
 /**
  * @brief Contains initialization values for assets entering a scene.
  *
@@ -21,6 +29,24 @@ class Actor {
     Actor();
 
   public:
+    enum ResizeMode {
+      /**
+       * Black borders are added in order to keep aspect ratio.
+       */
+      AspectBorderBlack,
+      /**
+       * Transparent borders are added in order to keep aspect ratio.
+       */
+      AspectBorderTransparent,
+      /**
+       * The image is resizes to fit the requested dimensions.
+       */
+      AspectNone,
+      /**
+       * Aspect ratio is kept but cropping of the image is necessary.
+       */
+      AspectCrop
+    };
     /**
      * Unique identifier for this instance.
      */
@@ -80,6 +106,24 @@ class Actor {
      * to the total length of the mashup.
      */
     int exits_at;
+    /**
+     * Resize mode used on this actor.
+     */
+    ResizeMode resize_mode;
+
+  public:
+    /**
+     * Gets the string value for an resize mode given its enum value.
+     * @param type Enum value for the resize mode.
+     * @return String value for the resize mode.
+     */
+    static std::string Get(const Actor::ResizeMode resize_mode);
+    /**
+     * Gets the enum value for an resize mode given its string value.
+     * @param type String value for the type.
+     * @return Enum value for the resize mode.
+     */
+    static Actor::ResizeMode Get(const std::string resize_mode);
 
 };
 

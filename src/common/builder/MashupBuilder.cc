@@ -172,6 +172,7 @@ int MashupBuilder::BuildActor(Actor& actor, const boost::property_tree::ptree& p
   actor.enters_at   = p_tree.get<int>("entersAt", 0);
   actor.offset      = p_tree.get<int>("offset", 0);
   actor.exits_at    = p_tree.get<int>("exitsAt", 0);
+  actor.resize_mode = Actor::Get(p_tree.get<std::string>("resize_mode",""));
   LOG_TRACE(" Actor asset ID: " << actor.asset_id, LOGGER_BUILDER);
   LOG_TRACE(" Actor instance ID: " << actor.instance_id, LOGGER_BUILDER);
   LOG_TRACE(" Actor x: " << actor.x, LOGGER_BUILDER);

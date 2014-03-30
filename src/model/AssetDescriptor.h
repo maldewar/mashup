@@ -57,7 +57,7 @@ class AssetDescriptor {
      */
     std::vector<AssetQualityDescriptor*> qualities;
 
-    public:
+  public:
      /**
      * Gets the string value for an asset type given its enum value.
      * @param type Enum value for the asset type.

@@ -5,6 +5,7 @@
 #include "../../model/Mashup.h"
 #include "../../pipeline/Pipeline.h"
 #include "../../pipeline/VideoActor.h"
+#include "../../pipeline/ImageActor.h"
 
 /**
  * @brief Creates a Pipeline object from a Mashup object.
