@@ -39,6 +39,10 @@ class Scene {
      */
     int length;
     /**
+     * Number of frames per second.
+     */
+    int framerate;
+    /**
      * Listing of actor to be included in the mashup.
      */
     std::vector<Actor*> actors;

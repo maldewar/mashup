@@ -36,10 +36,6 @@ VideoActor::VideoActor(Actor* actor,
                    false,
                    NULL);
     }
-    /*g_object_set(G_OBJECT(videoscale),
-                 "method",
-                 0,
-                 NULL);*/
     filter       = gst_element_factory_make(GST_ELEM_CAPSFILTER.c_str(),
                                             GetGstElementId(GST_ELEM_CAPSFILTER).c_str());
     volume       = gst_element_factory_make(GST_ELEM_VOLUME.c_str(),

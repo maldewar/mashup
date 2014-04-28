@@ -11,6 +11,9 @@
 #include "../model/AssetDescriptor.h"
 #include "../model/AssetQualityDescriptor.h"
 
+// Forward declaration.
+class Pipeline;
+
 /**
  * @brief Base class for actors in the pipeline.
  *
@@ -27,6 +30,23 @@ class BaseActor {
     BaseActor(Actor* actor,
                AssetDescriptor* asset_descriptor,
                AssetQualityDescriptor* asset_quality_descriptor);
+    /**
+     * Set true if the actor has been plugged into a pipeline.
+     * @active True if the actor pads are connected within a pipeline.
+     */
+    void SetActive(bool active);
+    /**
+     * Tells if the actor is plugged into a running pipeline.
+     * @return True if the actor pads are connected within a pipeline.
+     */
+    bool IsActive();
+    /**
+     * Prepares the element to be part of a pipeline.
+     * @param pipeline  Pipeline object.
+     * @param seek_time Point in the timeline length to play.
+     * @return True if the actor is prepared.
+     */
+    virtual bool Prepare(Pipeline* pipeline, int seek_time = 0);
 
   protected:
     std::string GetGstElementId(std::string base);
@@ -90,6 +110,11 @@ class BaseActor {
 
   protected:
     std::stringstream ss;
+    /**
+     * The value is true when the actor has been connected
+     * to a playing pipeline.
+     */
+    bool active;
 };
 
 #endif // MASHUP_PIPELINE_BASEACTOR_

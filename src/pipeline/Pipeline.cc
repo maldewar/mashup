@@ -12,7 +12,7 @@ Pipeline::Pipeline() {
   filter       = gst_element_factory_make("capsfilter","filter");
 };
 
-void Pipeline::Prepare() {
+void Pipeline::Prepare(int seek_time) {
   for (const auto& video_actor_pair : m_video_actors) {
     GstPad* video_src_pad;
     GstPad* audio_src_pad;
@@ -30,11 +30,9 @@ void Pipeline::Prepare() {
     video_actor->audiomixer_pad = audio_sink_pad;
     /*
     gint64 queued;
-
     guint in_width, in_height;
     gint fps_n;
     gint fps_d;
-
     gint xpos, ypos;
     guint zorder;
     gint blend_mode;
@@ -75,6 +73,7 @@ void Pipeline::Play() {
 
   bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
   bus_watch_id = gst_bus_add_watch(bus, Pipeline::BusCall, this);
+  g_timeout_add(1000/this->framerate, Pipeline::TimeoutBusCall, this);
   gst_object_unref (bus);
 
   gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PLAYING);
@@ -83,16 +82,21 @@ void Pipeline::Play() {
   //gst_object_unref (GST_OBJECT (pipeline));
 };
 
-void Pipeline::SetResolution(const int width, const int height) {
+void Pipeline::SetResolution(const unsigned int width,
+                             const unsigned int height,
+                             const unsigned int framerate) {
+  this->width     = width;
+  this->height    = height;
+  this->framerate = framerate;
   GstCaps* filter_caps;
-  this->width  = width;
-  this->height = height;
   filter_caps = gst_caps_new_simple ("video/x-raw",
          GST_PROP_WIDTH.c_str(), G_TYPE_INT, width,
          GST_PROP_HEIGHT.c_str(), G_TYPE_INT, height,
+         GST_PROP_FRAMERATE.c_str(), GST_TYPE_FRACTION, framerate, 1,
          NULL);
   g_object_set(G_OBJECT (filter), "caps", filter_caps, NULL);
   gst_caps_unref(filter_caps);
+  LOG_TRACE("Setting framerate to:" << framerate, LOGGER_PIPELINE);
 };
 
 int Pipeline::BusCall(GstBus* bus,
@@ -127,6 +131,12 @@ int Pipeline::BusCall(GstBus* bus,
 
   return TRUE;
 }
+
+int Pipeline::TimeoutBusCall(void* pipeline_obj) {
+  Pipeline* pipeline = static_cast<Pipeline*>(pipeline_obj);
+  LOG_TRACE("Timeout Bus Call from pipeline: " << pipeline->id, LOGGER_PIPELINE);
+  return TRUE;
+};
 /*
 gst-launch-1.0 -v uridecodebin uri=file:///home/waldemar/Projects/mashup/test/assets/hb/transparent.png ! imagefreeze ! videomixer name=m sink_0::zorder=0 ! videoconvert ! autovideosink videotestsrc ! videoscale ! video/x-raw, width=640, height=400 ! m.
 */

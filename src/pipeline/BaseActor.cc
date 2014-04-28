@@ -6,6 +6,7 @@
 BaseActor::BaseActor(Actor* actor,
                       AssetDescriptor* asset_descriptor,
                       AssetQualityDescriptor* asset_quality_descriptor) {
+  this->active = false;
   this->actor = actor;
   this->asset_descriptor = asset_descriptor;
   this->asset_quality_descriptor = asset_quality_descriptor;
@@ -13,6 +14,18 @@ BaseActor::BaseActor(Actor* actor,
   audio_src_pad = nullptr;
   videomixer_pad = nullptr;
   audiomixer_pad = nullptr;
+};
+
+void BaseActor::SetActive(bool active) {
+  this->active = active;
+};
+
+bool BaseActor::IsActive() {
+  return this->active;
+};
+
+bool BaseActor::Prepare(Pipeline* pipeline, int seek_time) {
+  // pure virtual.
 };
 
 std::string BaseActor::GetGstElementId(std::string base) {

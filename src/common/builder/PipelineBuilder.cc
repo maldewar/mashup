@@ -8,7 +8,9 @@ PipelineBuilder::PipelineBuilder() {};
 Pipeline* PipelineBuilder::Build(const Mashup& mashup) {
   Pipeline* pipeline = new Pipeline();
   if (mashup.scene != nullptr) {
-    pipeline->SetResolution(mashup.scene->width, mashup.scene->height);
+    pipeline->SetResolution(mashup.scene->width,
+                            mashup.scene->height,
+                            mashup.scene->framerate);
     BuildActors(mashup, *pipeline);
   }
   return pipeline;

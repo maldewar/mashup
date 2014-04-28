@@ -142,12 +142,14 @@ int MashupBuilder::BuildAssetQualityDescriptor(AssetQualityDescriptor& asset_qua
 };
 
 int MashupBuilder::BuildScene(Scene& scene, const boost::property_tree::ptree& p_tree) {
-  scene.width  = p_tree.get<int>("width", 0);
-  scene.height = p_tree.get<int>("height", 0);
-  scene.length = p_tree.get<int>("length", 0);
+  scene.width     = p_tree.get<int>("width", 0);
+  scene.height    = p_tree.get<int>("height", 0);
+  scene.length    = p_tree.get<int>("length", 0);
+  scene.framerate = p_tree.get<int>("framerate", 25);
   LOG_TRACE(" Scene width: " << scene.width, LOGGER_BUILDER);
   LOG_TRACE(" Scene height: " << scene.height, LOGGER_BUILDER);
   LOG_TRACE(" Scene length: " << scene.length, LOGGER_BUILDER);
+  LOG_TRACE(" Scene framerate: " << scene.framerate, LOGGER_BUILDER);
   if (boost::optional<const pt::ptree&> p_actors =
       p_tree.get_child_optional("actors")) {
     AppendActors(scene, p_actors.get());

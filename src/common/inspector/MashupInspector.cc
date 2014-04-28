@@ -66,6 +66,7 @@ void MashupInspector::Print(const Scene& scene,
   Print::Duple("Width", scene.width, out, indent);
   Print::Duple("Height", scene.height, out, indent);
   Print::Duple("Length", scene.length, out, indent);
+  Print::Duple("Framerate", scene.framerate, out, indent);
   if (scene.actors.size() == 0) {
     Print::Duple("Actors", "<empty>", out, indent);
     out << std::endl;
