@@ -47,6 +47,16 @@ class BaseActor {
      * @return True if the actor is prepared.
      */
     virtual bool Prepare(Pipeline* pipeline, int seek_time = 0);
+    /**
+     * Plugs the actor in a pipeline.
+     * @param pipeline Pipeline to plug the actor in. The pipeline
+     *                 becomes the parent pipeline.
+     */
+    virtual bool Plug(Pipeline* pipeline);
+    /**
+     * Unplugs the actor from its parent pipeline.
+     */
+    virtual bool Unplug();
 
   protected:
     std::string GetGstElementId(std::string base);
@@ -115,6 +125,10 @@ class BaseActor {
      * to a playing pipeline.
      */
     bool active;
+    /**
+     * Parent pipeline if the actor is active in one.
+     */
+    Pipeline* parent_pipeline;
 };
 
 #endif // MASHUP_PIPELINE_BASEACTOR_

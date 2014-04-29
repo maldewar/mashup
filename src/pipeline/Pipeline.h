@@ -46,6 +46,16 @@ class Pipeline {
                        const unsigned int height,
                        const unsigned int framerate);
     /**
+     * Get the running position for this pipeline.
+     * @return Position for this pipeline in nanoseconds.
+     */
+    long int GetPosition();
+    /**
+     * Get the duration of this pipeline.
+     * @return Duration for this pipeline in nanoseconds.
+     */
+    long int GetDuration();
+    /**
      * Handle messager from the pipeline bus.
      * @param bus Bus object for the pipeline.
      * @param msg Message received from the pipeline.
@@ -72,6 +82,14 @@ class Pipeline {
      * Output framerate.
      */
     int framerate;
+    /**
+     * Position in nanoseconds for the pipeline.
+     */
+    long int position;
+    /**
+     * Duration in nanoseconds for the pipeline.
+     */
+    long int duration;
     /**
      * Pipeline GStreamer Element.
      */

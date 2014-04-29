@@ -4,6 +4,8 @@
 #include "../util/Log.h"
 
 Pipeline::Pipeline() {
+  position     = 0;
+  duration     = 0;
   pipeline     = gst_pipeline_new(id.c_str());
   loop         = g_main_loop_new(NULL, false);
   videomixer   = gst_element_factory_make("videomixer", "videomixer");
@@ -99,6 +101,16 @@ void Pipeline::SetResolution(const unsigned int width,
   LOG_TRACE("Setting framerate to:" << framerate, LOGGER_PIPELINE);
 };
 
+long int Pipeline::GetPosition() {
+  gst_element_query_position(pipeline, GST_FORMAT_TIME, &position);
+  return position;
+};
+
+long int Pipeline::GetDuration() {
+  gst_element_query_duration(pipeline, GST_FORMAT_TIME, &duration);
+  return duration;
+};
+
 int Pipeline::BusCall(GstBus* bus,
                       GstMessage* msg,
                       void* pipeline_obj)
@@ -134,7 +146,7 @@ int Pipeline::BusCall(GstBus* bus,
 
 int Pipeline::TimeoutBusCall(void* pipeline_obj) {
   Pipeline* pipeline = static_cast<Pipeline*>(pipeline_obj);
-  LOG_TRACE("Timeout Bus Call from pipeline: " << pipeline->id, LOGGER_PIPELINE);
+  LOG_TRACE("Pipeline position: " << pipeline->GetPosition() << " duration: " << pipeline->GetDuration(), LOGGER_PIPELINE);
   return TRUE;
 };
 /*

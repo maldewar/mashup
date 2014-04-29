@@ -14,6 +14,7 @@ BaseActor::BaseActor(Actor* actor,
   audio_src_pad = nullptr;
   videomixer_pad = nullptr;
   audiomixer_pad = nullptr;
+  parent_pipeline = nullptr;
 };
 
 void BaseActor::SetActive(bool active) {
@@ -25,6 +26,14 @@ bool BaseActor::IsActive() {
 };
 
 bool BaseActor::Prepare(Pipeline* pipeline, int seek_time) {
+  // pure virtual.
+};
+
+bool BaseActor::Plug(Pipeline* pipeline) {
+  // pure virtual.
+};
+
+bool BaseActor::Unplug() {
   // pure virtual.
 };
 
