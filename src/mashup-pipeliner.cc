@@ -16,10 +16,9 @@ namespace po = boost::program_options;
 
 int main(int argc, char *argv[]) {
   try {
-    std::string inputFile;
-    std::string outputFile;
-    std::string outputFormat;
+    std::string input_file;
     std::string assets_path;
+    std::string gst_debug;
     po::options_description genericOpts("Generic options");
     genericOpts.add_options()
       ("help,h", "produce help message.")
@@ -30,20 +29,21 @@ int main(int argc, char *argv[]) {
     configShownOpts.add_options()
       ("assets-path,p", po::value<std::string>(&assets_path)->default_value(""),
         "path to prepend to the assets path description.")
-      ("output-file,o", po::value<std::string>(&outputFile)->default_value(""),
-        "path to output smashscript file.")
-      ("output-format,f", po::value<std::string>(&outputFormat)->default_value("json"),
-        "print to the selected format. Allowed values are: \"json\" \"xml\"");
-    ;
+      ("gst-debug", po::value<std::string>(&gst_debug)->default_value(""),
+        "takes a comma-separated list of category_name:level pairs to set specific "
+        "levels for the individual categories. Example: GST_AUTOPLUG:5,avidemux:3. "
+        "Alternatively, you can also set the GST_DEBUG environment variable, "
+        "which has the same effect.");
     po::options_description configHiddenOpts("Hidden options");
     configHiddenOpts.add_options()
-      ("input-file,i", po::value<std::string>(&inputFile),
-        "path to smashscript input file.")
-    ;
+      ("input-file,i", po::value<std::string>(&input_file),
+        "path to smashscript input file.");
+
     // Commandline options.
     po::options_description cmdlineOpts;
     cmdlineOpts.add(genericOpts).add(configShownOpts).add(configHiddenOpts);
     po::options_description printOpts;
+
     // Commandline options displayed with help.
     printOpts.add(genericOpts).add(configShownOpts);
     po::positional_options_description p;
@@ -74,13 +74,17 @@ int main(int argc, char *argv[]) {
       return 1;
     }
 
+    if (vm.count("gst-debug")) {
+      setenv("GST_DEBUG", gst_debug.c_str(), 1);
+    }
+
     if (vm.count("verbose")) {
       Log::SetLevel(Log::TRACE);
     }
     Mashup* mashup = new Mashup();
     MashscriptJsonParser* jsonParser = new MashscriptJsonParser();
     jsonParser->assets_path = assets_path;
-    jsonParser->FromFile(inputFile, *mashup);
+    jsonParser->FromFile(input_file, *mashup);
     std::cout << MashupInspector::Print(*mashup);
     gst_init (&argc, &argv);
     Pipeline* pipeline = PipelineBuilder::Build(*mashup);
