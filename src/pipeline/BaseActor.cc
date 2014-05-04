@@ -29,7 +29,7 @@ bool BaseActor::Prepare(Pipeline* pipeline, int seek_time) {
   // pure virtual.
 };
 
-bool BaseActor::Plug(Pipeline* pipeline) {
+bool BaseActor::Plug() {
   // pure virtual.
 };
 
@@ -49,4 +49,11 @@ void BaseActor::CheckGstElements(std::vector<std::pair<std::string, GstElement*>
       LOG_WARN("Could not initiate GstElement " << element_pair.first << " for actor " << actor->id,
                LOGGER_PIPELINE);
   }
+};
+
+void BaseActor::ClearTimeouts() {
+  for(auto& id : timeout_ids) {
+    g_source_remove(id);
+  }
+  timeout_ids.clear();
 };

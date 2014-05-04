@@ -2,6 +2,7 @@
 #define MASHUP_PIPELINE_VIDEOACTOR_
 
 #include "BaseActor.h"
+#include "Pipeline.h"
 
 /**
  * @brief Abstraction of elements required to creater a Scene actor.
@@ -19,15 +20,28 @@ class VideoActor : public BaseActor {
     VideoActor(Actor* actor,
                AssetDescriptor* asset_descriptor,
                AssetQualityDescriptor* asset_quality_descriptor);
+    bool Prepare(Pipeline* pipeline, int seek_time = 0);
+    bool Plug();
+    bool Unplug();
+    static int PlugTimeout(void* obj);
+    static int UnplugTimeout(void* obj);
+    static int SeekTimeout(void* obj);
     void SetGstElements();
     void SetDimensions(double width, double height);
     void SetX(double x);
     void SetY(double y);
     void SetZ(int z);
     void SetAlpha(double alpha);
+    void DecBlockCount();
     static void OnDecodebinPadAdded(GstElement* decodebin,
                                     GstPad*     pad,
                                     VideoActor*   video_actor);
+    static void OnNoMorePads(GstElement* decodebin,
+                             GstPad*     pad,
+                             VideoActor*   video_actor);
+    static int OnBlockedPad(GstPad*          pad,
+                            GstPadProbeInfo* info,
+                            VideoActor*      video_actor);
 
   public:
     /**
@@ -63,6 +77,10 @@ class VideoActor : public BaseActor {
      * Modifies the volume of the audio channel.
      */
     GstElement* volume;
+    int scene_width;
+    int scene_height;
+    int block_count;
+    bool prerolled;
     
 
   private:

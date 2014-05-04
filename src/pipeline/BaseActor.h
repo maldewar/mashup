@@ -49,10 +49,8 @@ class BaseActor {
     virtual bool Prepare(Pipeline* pipeline, int seek_time = 0);
     /**
      * Plugs the actor in a pipeline.
-     * @param pipeline Pipeline to plug the actor in. The pipeline
-     *                 becomes the parent pipeline.
      */
-    virtual bool Plug(Pipeline* pipeline);
+    virtual bool Plug();
     /**
      * Unplugs the actor from its parent pipeline.
      */
@@ -61,6 +59,7 @@ class BaseActor {
   protected:
     std::string GetGstElementId(std::string base);
     void CheckGstElements(std::vector<std::pair<std::string, GstElement*>> elements);
+    void ClearTimeouts();
     virtual void SetGstElements() = 0;
 
   public:
@@ -129,6 +128,10 @@ class BaseActor {
      * Parent pipeline if the actor is active in one.
      */
     Pipeline* parent_pipeline;
+    /**
+     * Identifiers for timeout events related to this actor.
+     */
+    std::vector<long int> timeout_ids;
 };
 
 #endif // MASHUP_PIPELINE_BASEACTOR_

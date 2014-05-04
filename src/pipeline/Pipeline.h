@@ -12,6 +12,9 @@
 #include "VideoActor.h"
 #include "ImageActor.h"
 
+class VideoActor;
+class ImageActor;
+
 /**
  * @brief Abstraction of a pipeline element of GStreamer.
  *
@@ -45,6 +48,10 @@ class Pipeline {
     void SetResolution(const unsigned int width,
                        const unsigned int height,
                        const unsigned int framerate);
+    /**
+     * Duration of the stream.
+     */
+    void SetDuration(int duration);
     /**
      * Get the running position for this pipeline.
      * @return Position for this pipeline in nanoseconds.
@@ -85,15 +92,19 @@ class Pipeline {
     /**
      * Position in nanoseconds for the pipeline.
      */
-    long int position;
+    long int position_nano;
     /**
      * Duration in nanoseconds for the pipeline.
      */
-    long int duration;
+    long int duration_nano;
     /**
      * Pipeline GStreamer Element.
      */
     GstElement* pipeline;
+    /**
+     * Bus for messages.
+     */
+    GstBus* bus;
     /**
      * Main loop for playing this pipeline.
      */
@@ -114,6 +125,8 @@ class Pipeline {
      * Video output filter to set resolution.
      */
     GstElement* filter;
+    GstElement* fakesrc;
+    GstElement* fakesink;
     /**
      * Keeps track of all the VideosActor instances involved in the pipeline.
      */

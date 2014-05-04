@@ -22,7 +22,7 @@ class PipelineBuilder {
      * @return Pipeline object ready to be played.
      */
     static Pipeline* Build(const Mashup& mashup);
-    static int BuildActors(const Mashup& mashup, Pipeline& pipeline);
+    static int BuildActors(const Mashup& mashup, Pipeline& pipeline, int scene_width, int scene_height);
 
   private:
     /**

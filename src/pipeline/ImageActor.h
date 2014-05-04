@@ -53,6 +53,8 @@ class ImageActor : public BaseActor {
      * Video output filter to set resolution.
      */
     GstElement* filter;
+    int scene_width;
+    int scene_height;
 
   private:
     double height;

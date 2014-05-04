@@ -8,6 +8,8 @@ ImageActor::ImageActor(Actor* actor,
                       AssetDescriptor* asset_descriptor,
                       AssetQualityDescriptor* asset_quality_descriptor) :
             BaseActor(actor, asset_descriptor, asset_quality_descriptor) {
+  scene_width  = 0;
+  scene_height = 0;
   if (actor->id.compare("") != 0) {
     bin          = gst_bin_new(GetGstElementId(GST_ELEM_BIN).c_str());
     filesrc      = gst_element_factory_make(GST_ELEM_FILESRC.c_str(),
@@ -72,8 +74,6 @@ void ImageActor::SetDimensions(double width, double height) {
   this->width = width;
   this->height = height;
   GstCaps* filter_caps;
-  int scene_width = 640;
-  int scene_height = 480;
   area_width_px = Math::RelativeToPx(width, scene_width);
   area_height_px = Math::RelativeToPx(height, scene_height);
   switch (actor->resize_mode) {
@@ -110,12 +110,12 @@ void ImageActor::SetX(double x) {
   if (actor->resize_mode == Actor::ResizeMode::AspectBorderTransparent) {
     g_object_set(G_OBJECT(videomixer_pad),
                  "xpos",
-                 Math::RelativeToPx(x, 640) + ((area_width_px - width_px) / 2),
+                 Math::RelativeToPx(x, scene_width) + ((area_width_px - width_px) / 2),
                  NULL);
   } else {
     g_object_set(G_OBJECT(videomixer_pad),
                  "xpos",
-                 Math::RelativeToPx(x, 640),
+                 Math::RelativeToPx(x, scene_width),
                  NULL);
   }
 };
@@ -125,12 +125,12 @@ void ImageActor::SetY(double y) {
   if (actor->resize_mode == Actor::ResizeMode::AspectBorderTransparent) {
     g_object_set(G_OBJECT(videomixer_pad),
                  "ypos",
-                 Math::RelativeToPx(y, 480) + ((area_height_px - height_px) / 2),
+                 Math::RelativeToPx(y, scene_height) + ((area_height_px - height_px) / 2),
                  NULL);
   } else {
     g_object_set(G_OBJECT(videomixer_pad),
                  "ypos",
-                 Math::RelativeToPx(y, 480),
+                 Math::RelativeToPx(y, scene_height),
                  NULL);
   }
 };
