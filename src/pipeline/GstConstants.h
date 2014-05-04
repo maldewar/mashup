@@ -26,6 +26,7 @@ const std::string M_GST_PAD_MULTI_SRC  = "src_%u";
 const std::string M_GST_PAD_VIDEO_SRC  = "video_src";
 const std::string M_GST_PAD_AUDIO_SRC  = "audio_src";
 
-const std::string GST_EVENT_PAD_ADDED = "pad-added";
+const std::string GST_EVENT_PAD_ADDED    = "pad-added";
+const std::string GST_EVENT_NO_MORE_PADS = "no-more-pads";
 
 #endif // MASHUP_PIPELINE_GSTCONSTANTS_
