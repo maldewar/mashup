@@ -1,5 +1,5 @@
 FILE (GLOB_RECURSE project_SRCS main.cc *.cpp *.cxx */*.cc *.C *.c *.h *.hpp)
-SET (project_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES} ${Glib_LIBRARIES} ${Glib_GOBJECT_LIBRARIES} ${GSTREAMER_LIBRARIES})
+SET (project_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES} ${Glib_LIBRARIES} ${Glib_GOBJECT_LIBRARIES} ${GSTREAMER_LIBRARIES} ${GSTREAMER_BASE_LIBRARIES})
 SET (project_BIN ${PROJECT_NAME})
 
 ##############
@@ -16,7 +16,7 @@ INSTALL(TARGETS ${project_BIN} DESTINATION bin)
 #  MASHSCRIPT PARSER COMMAND  #
 ###############################
 FILE (GLOB_RECURSE mashscript_parser_SRCS mashscript-parser.cc *.cpp *.cxx */*.cc *.C *.c *.h *.hpp)
-SET (mashscript_parser_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES} ${Glib_LIBRARIES} ${Glib_GOBJECT_LIBRARIES} ${GSTREAMER_LIBRARIES})
+SET (mashscript_parser_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES} ${Glib_LIBRARIES} ${Glib_GOBJECT_LIBRARIES} ${GSTREAMER_LIBRARIES} ${GSTREAMER_BASE_LIBRARIES})
 SET (mashscript_parser_BIN "mashscript-parser")
 ADD_EXECUTABLE(${mashscript_parser_BIN} ${mashscript_parser_SRCS})
 
@@ -30,7 +30,7 @@ INSTALL(TARGETS ${mashscript_parser_BIN} DESTINATION bin)
 ######################
 FILE (GLOB_RECURSE mashup_pipeliner_SRCS mashup-pipeliner.cc *.cpp *.cxx */*.cc *.C *.c *.h *.hpp)
 MESSAGE(ALERT "GOBJECT LIBRARIES: ${GLIB_GOBJECT_LIBRARIES}")
-SET (mashup_pipeliner_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES} ${Glib_LIBRARIES} ${Glib_GOBJECT_LIBRARIES} ${GSTREAMER_LIBRARIES})
+SET (mashup_pipeliner_LIBS ${Boost_LIBRARIES} ${Log4Cxx_LIBRARIES} ${Glib_LIBRARIES} ${Glib_GOBJECT_LIBRARIES} ${GSTREAMER_LIBRARIES} ${GSTREAMER_BASE_LIBRARIES})
 SET (mashup_pipeliner_BIN "mashup-pipeliner")
 ADD_EXECUTABLE(${mashup_pipeliner_BIN} ${mashup_pipeliner_SRCS})
 
