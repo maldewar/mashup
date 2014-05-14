@@ -107,6 +107,11 @@ class Actor {
      */
     int exits_at;
     /**
+     * Time in milliseconds to play the element in the scene, relative
+     * to the length of the element minus the offset.
+     */
+    int duration;
+    /**
      * Resize mode used on this actor.
      */
     ResizeMode resize_mode;

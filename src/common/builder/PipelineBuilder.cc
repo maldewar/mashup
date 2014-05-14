@@ -8,7 +8,6 @@ PipelineBuilder::PipelineBuilder() {};
 Pipeline* PipelineBuilder::Build(const Mashup& mashup) {
   Pipeline* pipeline = new Pipeline();
   if (mashup.scene != nullptr) {
-    pipeline->SetDuration(mashup.scene->length);
     pipeline->SetResolution(mashup.scene->width,
                             mashup.scene->height,
                             mashup.scene->framerate);
@@ -30,8 +29,6 @@ int PipelineBuilder::BuildActors(const Mashup& mashup, Pipeline& pipeline, int s
           VideoActor* video_actor = new VideoActor(actor,
                                                    asset_descriptor,
                                                    asset_quality_descriptor);
-          video_actor->scene_width  = scene_width;
-          video_actor->scene_height = scene_height;
           pipeline.m_video_actors[{actor->asset_id, actor->instance_id}] = video_actor;
         }
         if (asset_descriptor->type == AssetDescriptor::Type::Image) {
@@ -41,8 +38,6 @@ int PipelineBuilder::BuildActors(const Mashup& mashup, Pipeline& pipeline, int s
           ImageActor* image_actor = new ImageActor(actor,
                                                    asset_descriptor,
                                                    asset_quality_descriptor);
-          image_actor->scene_width  = scene_width;
-          image_actor->scene_height = scene_height;
           pipeline.m_image_actors[{actor->asset_id, actor->instance_id}] = image_actor;
         }
         ss.str(std::string());

@@ -10,6 +10,7 @@ ImageActor::ImageActor(Actor* actor,
             BaseActor(actor, asset_descriptor, asset_quality_descriptor) {
   scene_width  = 0;
   scene_height = 0;
+  /*
   if (actor->id.compare("") != 0) {
     bin          = gst_bin_new(GetGstElementId(GST_ELEM_BIN).c_str());
     filesrc      = gst_element_factory_make(GST_ELEM_FILESRC.c_str(),
@@ -60,17 +61,22 @@ ImageActor::ImageActor(Actor* actor,
     video_src_pad = gst_element_get_static_pad (filter, M_GST_PAD_SRC.c_str());
     gst_element_add_pad(bin, gst_ghost_pad_new(M_GST_PAD_VIDEO_SRC.c_str(), video_src_pad));
     gst_object_unref(GST_OBJECT (video_src_pad));
+    //gst_element_set_state(this->bin, GST_STATE_PAUSED);
   }
+  */
 };
 
 void ImageActor::SetGstElements() {
+  /*
   SetDimensions(actor->width, actor->height);
   SetX(actor->x);
   SetY(actor->y);
   SetZ(actor->z);
+  */
 };
 
 void ImageActor::SetDimensions(double width, double height) {
+  /*
   this->width = width;
   this->height = height;
   GstCaps* filter_caps;
@@ -103,9 +109,11 @@ void ImageActor::SetDimensions(double width, double height) {
          NULL);
   g_object_set(G_OBJECT (filter), "caps", filter_caps, NULL);
   gst_caps_unref(filter_caps);
+  */
 };
 
 void ImageActor::SetX(double x) {
+  /*
   this->x = x;
   if (actor->resize_mode == Actor::ResizeMode::AspectBorderTransparent) {
     g_object_set(G_OBJECT(videomixer_pad),
@@ -118,9 +126,11 @@ void ImageActor::SetX(double x) {
                  Math::RelativeToPx(x, scene_width),
                  NULL);
   }
+  */
 };
 
 void ImageActor::SetY(double y) {
+  /*
   this->y = y;
   if (actor->resize_mode == Actor::ResizeMode::AspectBorderTransparent) {
     g_object_set(G_OBJECT(videomixer_pad),
@@ -133,19 +143,23 @@ void ImageActor::SetY(double y) {
                  Math::RelativeToPx(y, scene_height),
                  NULL);
   }
+  */
 };
 
 void ImageActor::SetZ(int z) {
+  /*
   this->z = z;
   g_object_set(G_OBJECT(videomixer_pad),
                  "zorder",
                  z,
                  NULL);
+  */
 };
 
 void ImageActor::OnDecodebinPadAdded(GstElement* decodebin,
                                      GstPad* pad,
                                      ImageActor* image_actor) {
+  /*
   GstCaps          *new_pad_caps = NULL;
   GstStructure     *new_pad_struct = NULL;
   const gchar      *new_pad_type = NULL;
@@ -168,4 +182,5 @@ void ImageActor::OnDecodebinPadAdded(GstElement* decodebin,
   }
   gst_caps_unref(new_pad_caps);
   gst_object_unref(sink_pad);
+  */
 };

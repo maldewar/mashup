@@ -6,6 +6,7 @@
 #include <sstream>
 
 #include <gst/gst.h>
+#include <ges/ges.h>
 
 #include "../model/Actor.h"
 #include "../model/AssetDescriptor.h"
@@ -50,7 +51,7 @@ class BaseActor {
     /**
      * Plugs the actor in a pipeline.
      */
-    virtual bool Plug();
+    virtual bool Plug(Pipeline* pipeline);
     /**
      * Unplugs the actor from its parent pipeline.
      */
@@ -60,9 +61,22 @@ class BaseActor {
     std::string GetGstElementId(std::string base);
     void CheckGstElements(std::vector<std::pair<std::string, GstElement*>> elements);
     void ClearTimeouts();
+    void SetTimelineProperties();
     virtual void SetGstElements() = 0;
 
   public:
+    /**
+     * Nanoseconds to wait for the clip to start in the pipeline.
+     */
+    unsigned long int enters_at_nano;
+    /**
+     * Nanoseconds to cut from the begining of the clip.
+     */
+    unsigned long int offset_nano;
+    /**
+     * Nanoseconds to play the clip.
+     */
+    unsigned long int duration_nano;
     /**
      * Resize Mode.
      */
@@ -97,25 +111,14 @@ class BaseActor {
      */
     AssetQualityDescriptor* asset_quality_descriptor;
     /**
-     * Bin to contain all the elements created for this actor.
+     * Pointer to the asset in the project.
      */
-    GstElement* bin;
+    GESAsset* asset;
     /**
-     * Pad to be used as video output for the bin.
+     * Clip in the timeline.
      */
-    GstPad* video_src_pad;
-    /**
-     * Pad to be used as audio output for the bin.
-     */
-    GstPad* audio_src_pad;
-    /**
-     * Pad to the mixing element for video this bin is linked to.
-     */
-    GstPad* videomixer_pad;
-    /**
-     * Pad to the mixing element for audio this bin is linked to.
-     */
-    GstPad* audiomixer_pad;
+    GESClip* clip;
+    
 
   protected:
     std::stringstream ss;

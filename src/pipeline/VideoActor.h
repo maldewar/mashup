@@ -20,67 +20,21 @@ class VideoActor : public BaseActor {
     VideoActor(Actor* actor,
                AssetDescriptor* asset_descriptor,
                AssetQualityDescriptor* asset_quality_descriptor);
-    bool Prepare(Pipeline* pipeline, int seek_time = 0);
-    bool Plug();
+    bool Plug(Pipeline* pipeline);
     bool Unplug();
-    static int PlugTimeout(void* obj);
-    static int UnplugTimeout(void* obj);
-    static int SeekTimeout(void* obj);
+    bool Prepare(int seek_time = 0);
     void SetGstElements();
     void SetDimensions(double width, double height);
     void SetX(double x);
     void SetY(double y);
     void SetZ(int z);
     void SetAlpha(double alpha);
-    void DecBlockCount();
-    static void OnDecodebinPadAdded(GstElement* decodebin,
-                                    GstPad*     pad,
-                                    VideoActor*   video_actor);
-    static void OnNoMorePads(GstElement* decodebin,
-                             GstPad*     pad,
-                             VideoActor*   video_actor);
-    static int OnBlockedPad(GstPad*          pad,
-                            GstPadProbeInfo* info,
-                            VideoActor*      video_actor);
 
   public:
-    /**
-     * Reads the data stream from a file.
-     */
-    GstElement* filesrc;
-    /**
-     * Creates to buffer in memory to contain the data read
-     * from the file.
-     */
-    GstElement* queue;
-    /**
-     * Decodes the data stream and produces video/audio output.
-     */
-    GstElement* decodebin;
-    /**
-     * Converts video to video/x-raw format.
-     */
-    GstElement* videoconvert;
-    /**
-     * Converts audio to audio/x-raw format.
-     */
-    GstElement* audioconvert;
-    /**
-     * Scale the proportions of the video channel.
-     */
-    GstElement* videoscale;
-    /**
-     * Video output filter to set resolution.
-     */
-    GstElement* filter;
-    /**
-     * Modifies the volume of the audio channel.
-     */
-    GstElement* volume;
-    int scene_width;
-    int scene_height;
-    int block_count;
-    bool prerolled;
+    bool plugged;
+    GESTrackElement* audio_track_element;
+    GESTrackElement* video_track_element;
+    
     
 
   private:

@@ -87,6 +87,7 @@ int main(int argc, char *argv[]) {
     jsonParser->FromFile(input_file, *mashup);
     std::cout << MashupInspector::Print(*mashup);
     gst_init (&argc, &argv);
+    ges_init ();
     Pipeline* pipeline = PipelineBuilder::Build(*mashup);
     pipeline->Play();
   } catch(std::exception& e) {

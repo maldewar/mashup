@@ -173,7 +173,8 @@ int MashupBuilder::BuildActor(Actor& actor, const boost::property_tree::ptree& p
   actor.rotation    = p_tree.get<double>("rotation", 0);
   actor.enters_at   = p_tree.get<int>("entersAt", 0);
   actor.offset      = p_tree.get<int>("offset", 0);
-  actor.exits_at    = p_tree.get<int>("exitsAt", 0);
+  actor.exits_at    = p_tree.get<int>("exitsAt", -1);
+  actor.duration    = p_tree.get<int>("duration", -1);
   actor.resize_mode = Actor::Get(p_tree.get<std::string>("resize_mode",""));
   LOG_TRACE(" Actor asset ID: " << actor.asset_id, LOGGER_BUILDER);
   LOG_TRACE(" Actor instance ID: " << actor.instance_id, LOGGER_BUILDER);
@@ -202,7 +203,7 @@ int MashupBuilder::BuildTransition(Transition& transition,
     return BUILDER_ERROR_REQUIRED_PROPERTY;
   }
   transition.starts_at = p_tree.get<int>("startsAt", 0);
-  transition.duration = p_tree.get<int>("duration", 0);
+  transition.duration = p_tree.get<int>("duration", -1);
   int tuple_size = ValueBuilder::GetTupleSize(transition.target);
   boost::optional<const pt::ptree&> p_start_values = p_tree.get_child_optional("startValue");
   boost::optional<const pt::ptree&> p_end_values = p_tree.get_child_optional("endValue");

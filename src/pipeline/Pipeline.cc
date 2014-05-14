@@ -1,5 +1,7 @@
 #include "Pipeline.h"
 
+//#include <gst/base/gstbasesink.h>
+
 #include "GstConstants.h"
 #include "../util/Math.h"
 #include "../util/Log.h"
@@ -7,98 +9,124 @@
 Pipeline::Pipeline() {
   position_nano = 0;
   duration_nano = -1;
-  pipeline     = gst_pipeline_new(id.c_str());
-  loop         = g_main_loop_new(NULL, false);
-  videomixer   = gst_element_factory_make("videomixer", "videomixer");
-  videoconvert = gst_element_factory_make("videoconvert", "videoconvert");
-  audiomixer   = gst_element_factory_make("adder", "audiomixer");
-  filter       = gst_element_factory_make("capsfilter","filter");
-  fakesrc      = gst_element_factory_make("fakesrc", "fakesrc");
-  g_object_set(G_OBJECT(fakesrc), "format", GST_FORMAT_TIME, NULL);
-  g_object_set(G_OBJECT(fakesrc), "is-live", true, NULL);
-  fakesink     = gst_element_factory_make("fakesink", "fakesink");
+
+  pipeline = gst_pipeline_new(id.c_str());
+  project  = ges_project_new(id.c_str());
+  filter   = gst_element_factory_make("capsfilter","filter");
+
+  // TODO: Plugable sink.
+  autovideosink = gst_element_factory_make("autovideosink", "autovideosink");
+  autoaudiosink = gst_element_factory_make("autoaudiosink", "autoaudiosink");
+  audioqueue    = gst_element_factory_make("queue", "audioqueue");
+  videoqueue    = gst_element_factory_make("queue", "videoqueue");
+
+  // Create GES Elements.
+  timeline = GES_TIMELINE (ges_asset_extract (GES_ASSET (project), NULL));
+  track_a  = GES_TRACK (ges_audio_track_new ());
+  track_v  = GES_TRACK (ges_video_track_new ());
+  layer = GES_LAYER (ges_layer_new ());
+  g_object_set (layer, "priority", 1, NULL);
+
+  if (!ges_timeline_add_layer (timeline, layer) ||
+      !ges_timeline_add_track (timeline, track_a) ||
+      !ges_timeline_add_track (timeline, track_v)) {
+    LOG_ERROR("Can not add GES elements in Pipeline id: " << id, LOGGER_PIPELINE);
+  } else {
+    LOG_TRACE("GES elements added correctly to Pipeline id: " << id, LOGGER_PIPELINE);
+  }
+
+  // Link GStreamer elements.
+  gst_bin_add_many(GST_BIN(pipeline),
+                   GST_ELEMENT(timeline),
+                   audioqueue,
+                   autoaudiosink,
+                   filter,
+                   videoqueue,
+                   autovideosink,
+                   NULL);
+  g_signal_connect (timeline,
+                    "pad-added",
+                    (GCallback) Pipeline::TimelinePadAddedCallback,
+                    this);
+  gst_element_link_many(filter, videoqueue, autovideosink, NULL);
+  gst_element_link_many(audioqueue, autoaudiosink, NULL);
+  bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
+  bus_watch_id = gst_bus_add_watch(bus, Pipeline::BusCall, this);
+  gst_object_unref (bus);
+};
+
+void Pipeline::asset_loaded_cb(GObject * source_object, GAsyncResult * res, Pipeline* pipeline) {
+  LOG_TRACE("PIPELINE ASSET LOADED CALLBACK", LOGGER_PIPELINE);
+  GError *error = NULL;
+
+  GESUriClipAsset *mfs =
+      GES_URI_CLIP_ASSET (ges_asset_request_finish (res, &error));
+
+  if (error) {
+    LOG_TRACE("error creating asset " << error->message, LOGGER_PIPELINE);
+
+    return;
+  }
+/*
+  GESUriClipAsset *mfs =
+      GES_URI_CLIP_ASSET (ges_asset_request_finish (res, NULL));
+*/
+  GstDiscovererInfo *discoverer_info = NULL;
+  discoverer_info = ges_uri_clip_asset_get_info (mfs);
+  LOG_TRACE("RESULT IS " << gst_discoverer_info_get_result (discoverer_info) << ", INFOTYPE IS " << G_OBJECT_TYPE_NAME (mfs) << ", DURATION IS " << ges_uri_clip_asset_get_duration (mfs), LOGGER_PIPELINE);
+
+
+  gst_object_unref (mfs);
+  /*
+  assetsLoaded++;
+  if (assetsLoaded == assetsCount) {
+    GstDiscovererInfo *info = ges_uri_clip_asset_get_info (mfs);
+    GstEncodingProfile *profile = make_profile_from_info (info);
+    ges_pipeline_set_render_settings (pipeline, output_uri, profile);
+    if (!ges_pipeline_set_mode (pipeline, GES_PIPELINE_MODE_SMART_RENDER)) {
+      g_main_loop_quit (mainloop);
+      return;
+    }
+    gst_element_set_state (GST_ELEMENT (pipeline), GST_STATE_PLAYING);
+  }
+
+  gst_object_unref (mfs);
+  */
 };
 
 void Pipeline::Prepare(int seek_time) {
+  for (const auto& video_actor_pair : m_video_actors) {
+    if (!video_actor_pair.second->plugged) {
+      video_actor_pair.second->Plug(this);
+    }
+    video_actor_pair.second->Prepare(seek_time);
+  }
+  for (const auto& image_actor_pair : m_image_actors) {
+  }
+  /*
   position_nano = Math::MilliToNano(seek_time);
-  //GstState state;
-  //gst_element_get_state(pipeline, &state, NULL, GST_CLOCK_TIME_NONE);
-  /*gst_element_set_state(pipeline, GST_STATE_PAUSED);
-  bool seek_result = gst_element_seek(pipeline,
+  bool seek_result = gst_element_seek(GST_ELEMENT(timeline),
                    1.0,
                    GST_FORMAT_TIME,
                    GST_SEEK_FLAG_FLUSH,
                    GST_SEEK_TYPE_SET,
                    position_nano,
                    GST_SEEK_TYPE_SET,
-                   duration_nano - position_nano);
-  //gst_element_set_state(pipeline, state);
+                   -1);
   if (seek_result) {
     LOG_TRACE("SEEK METHOD SUCCESSFULL.", LOGGER_PIPELINE);
   } else {
     LOG_TRACE("SEEK_METHOD FAILED.", LOGGER_PIPELINE);
   }
-    //gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PLAYING);
   */
-  for (const auto& video_actor_pair : m_video_actors) {
-    video_actor_pair.second->Prepare(this, seek_time);
-    /*
-    gint64 queued;
-    guint in_width, in_height;
-    gint fps_n;
-    gint fps_d;
-    gint xpos, ypos;
-    guint zorder;
-    gint blend_mode;
-    gdouble alpha;
-    */
-  }
-  for (const auto& image_actor_pair : m_image_actors) {
-    GstPad* video_src_pad;
-    GstPad* video_sink_pad;
-    ImageActor* image_actor = image_actor_pair.second;
-    gst_bin_add(GST_BIN(pipeline), image_actor->bin);
-    video_src_pad = gst_element_get_static_pad(image_actor->bin, M_GST_PAD_VIDEO_SRC.c_str());
-    video_sink_pad = gst_element_get_request_pad(videomixer, M_GST_PAD_MULTI_SINK.c_str());
-    gst_pad_link(video_src_pad, video_sink_pad);
-    image_actor->videomixer_pad = video_sink_pad;
-    gst_object_unref(GST_OBJECT(video_src_pad));
-    image_actor->SetGstElements();
-    gst_element_set_state(image_actor->bin, GST_STATE_PLAYING);
-    gst_element_set_state(pipeline, GST_STATE_PLAYING);
-  }
 };
 
 void Pipeline::Play() {
-  GstElement *e_videotestsrc;
-  GstElement *e_audiotestsrc;
-  GstElement *e_autovideosink;
-  GstElement *e_autoaudiosink;
-  guint bus_watch_id;
-  e_autovideosink = gst_element_factory_make("autovideosink", "autovideosink");
-  e_autoaudiosink = gst_element_factory_make("autoaudiosink", "autoaudiosink");
-  gst_bin_add_many(GST_BIN(pipeline), fakesrc, fakesink, NULL);
-  gst_bin_add_many(GST_BIN(pipeline), videomixer, videoconvert, filter, e_autovideosink, NULL);
-  gst_bin_add_many(GST_BIN(pipeline), audiomixer, e_autoaudiosink, NULL);
-  gst_element_link_many(fakesrc, fakesink, NULL);
-  gst_element_link_many(videomixer, videoconvert, filter, e_autovideosink, NULL);
-  gst_element_link_many(audiomixer, e_autoaudiosink, NULL);
-  //gst_element_set_start_time(GST_ELEMENT(pipeline), GST_CLOCK_TIME_NONE);
   Prepare();
-
-  bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
-  bus_watch_id = gst_bus_add_watch(bus, Pipeline::BusCall, this);
   g_timeout_add(1000/this->framerate, Pipeline::TimeoutBusCall, this);
-  gst_object_unref (bus);
-
-  LOG_TRACE("SETTING PIPELINE TO PLAY.", LOGGER_PIPELINE);
-  GstStateChangeReturn st =
   gst_element_set_state(GST_ELEMENT(pipeline), GST_STATE_PLAYING);
-  LOG_TRACE("PIPELINE STATE SET: " << st, LOGGER_PIPELINE);
+  loop = g_main_loop_new(NULL, false);
   g_main_loop_run (loop);
-  LOG_TRACE("Running main Loop", LOGGER_PIPELINE);
-  //gst_element_set_state (pipeline, GST_STATE_NULL);
-  //gst_object_unref (GST_OBJECT (pipeline));
 };
 
 void Pipeline::SetResolution(const unsigned int width,
@@ -118,17 +146,13 @@ void Pipeline::SetResolution(const unsigned int width,
   LOG_TRACE("Setting framerate to:" << framerate, LOGGER_PIPELINE);
 };
 
-void Pipeline::SetDuration(int duration) {
-  duration_nano = Math::MilliToNano(duration);
-};
-
 long int Pipeline::GetPosition() {
-  gst_element_query_position(pipeline, GST_FORMAT_TIME, &position_nano);
+  gst_element_query_position(GST_ELEMENT(pipeline), GST_FORMAT_TIME, &position_nano);
   return position_nano;
 };
 
 long int Pipeline::GetDuration() {
-  gst_element_query_duration(pipeline, GST_FORMAT_TIME, &duration_nano);
+  gst_element_query_duration(GST_ELEMENT(pipeline), GST_FORMAT_TIME, &duration_nano);
   return duration_nano;
 };
 
@@ -161,6 +185,7 @@ int Pipeline::BusCall(GstBus* bus,
     }
 
     case GST_MESSAGE_APPLICATION: {
+      /*
       if (gst_message_has_name(msg, "video_actor_plug")) {
         const GstStructure* structure = gst_message_get_structure(msg);
         VideoActor* video_actor;
@@ -175,7 +200,7 @@ int Pipeline::BusCall(GstBus* bus,
           video_actor->Plug();
           LOG_TRACE("EVENT VIDEO ACTOR PLUG: " << video_actor->actor->id, LOGGER_PIPELINE);
         }
-      }
+      }*/
       break;
     }
 
@@ -196,7 +221,7 @@ int Pipeline::BusCall(GstBus* bus,
 int Pipeline::TimeoutBusCall(void* pipeline_obj) {
   Pipeline* pipeline = static_cast<Pipeline*>(pipeline_obj);
   GstState st;
-  gst_element_get_state(pipeline->pipeline, &st, 0, 0);
+  gst_element_get_state(GST_ELEMENT(pipeline->pipeline), &st, 0, 0);
   std::string st_str;
   switch(st) {
     case GST_STATE_VOID_PENDING:
@@ -218,6 +243,36 @@ int Pipeline::TimeoutBusCall(void* pipeline_obj) {
   LOG_TRACE("Pipeline position: " << pipeline->GetPosition() << " duration: " << pipeline->GetDuration() << " state: " << st_str << " state_num: " << st, LOGGER_PIPELINE);
   return TRUE;
 };
-/*
-gst-launch-1.0 -v uridecodebin uri=file:///home/waldemar/Projects/mashup/test/assets/hb/transparent.png ! imagefreeze ! videomixer name=m sink_0::zorder=0 ! videoconvert ! autovideosink videotestsrc ! videoscale ! video/x-raw, width=640, height=400 ! m.
-*/
+
+void Pipeline::TimelinePadAddedCallback(GstElement* timeline,
+                                        GstPad* pad,
+                                        Pipeline* pipeline) {
+  GstCaps          *new_pad_caps = NULL;
+  GstStructure     *new_pad_struct = NULL;
+  const gchar      *new_pad_type = NULL;
+  GstPad           *sink_pad = NULL;
+  GstPadLinkReturn  ret;
+
+  new_pad_caps   = gst_pad_query_caps(pad, NULL);
+  new_pad_struct = gst_caps_get_structure(new_pad_caps, 0);
+  new_pad_type   = gst_structure_get_name(new_pad_struct);
+
+  std::string s_pad_type = std::string(new_pad_type);
+  if (g_str_has_prefix(new_pad_type, "video/x-raw")) {
+    sink_pad = gst_element_get_static_pad(pipeline->filter, "sink");
+    LOG_TRACE("Adding video pad for timeline in Pipeline id: " << pipeline->id,
+              LOGGER_PIPELINE);
+  }
+  if (g_str_has_prefix(new_pad_type, "audio/x-raw")) {
+    sink_pad = gst_element_get_static_pad(pipeline->audioqueue, "sink");
+    LOG_TRACE("Adding audio pad for timeline in Pipeline id: " << pipeline->id,
+              LOGGER_PIPELINE);
+  }
+
+  if (!gst_pad_is_linked(sink_pad)) {
+    ret = gst_pad_link(pad, sink_pad);
+    gst_element_sync_state_with_parent(timeline);
+  }
+  gst_caps_unref(new_pad_caps);
+  gst_object_unref(sink_pad);
+};
